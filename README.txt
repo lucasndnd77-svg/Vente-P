@@ -6,7 +6,7 @@ PAGES
 - index.html        accueil, présentation, aperçu des goûts, contact (fictif)
 - catalogue.html    17 goûts, recherche instantanée + bouton Réinitialiser
 - produit.html      fiche d'un goût (produit.html?id=strawberry-kiwi)
-- panier.html       sélection de démonstration (localStorage) : quantités, suppression, vidage. Aucun paiement.
+- panier.html       sélection (localStorage) : quantités, suppression, vidage + formulaire de validation qui envoie la demande par e-mail. Aucun paiement.
 - admin.html        administration de DÉMO : ajouter / renommer / décrire / changer l'image / supprimer / réordonner
 - informations.html avertissements nicotine, interdiction aux mineurs
 
@@ -24,3 +24,8 @@ MODIFIER LE CONTENU
 NOTES
 - Les illustrations sont originales et non officielles.
 - Avertissements santé présents sur le site : à conserver. En France, la publicité pour les produits de vapotage/nicotinés est très encadrée : vérifiez la réglementation avant toute publication en ligne.
+
+ENVOI DES COMMANDES PAR E-MAIL (Web3Forms)
+1. Allez sur web3forms.com, saisissez VOTRE adresse e-mail : une clé d'accès (access key) vous est envoyée.
+2. Ouvrez js/panier.js et remplacez COLLE_TA_CLE_ICI par cette clé (en haut du fichier).
+3. Mettez le site en ligne, faites une commande test : le mail arrive sur votre adresse.

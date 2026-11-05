@@ -3,3 +3,4 @@
 .qty{display:flex;align-items:center;gap:10px}.qty button{width:34px;height:34px;border-radius:50%;border:1px solid #ffffff30;background:#ffffff10;color:#fff;font-size:1.1rem;cursor:pointer}
 .sum{background:var(--bg2);border-radius:var(--r);padding:20px;margin-top:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px}
 .empty{text-align:center;padding:50px 0;color:var(--mut)}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}.chk{display:flex;gap:10px;align-items:flex-start;color:#cfcfe0}.chk input{width:auto;margin-top:5px}#of label{color:var(--mut)}#of .warn{margin:12px 0}@media(max-width:600px){.fg{grid-template-columns:1fr}}
