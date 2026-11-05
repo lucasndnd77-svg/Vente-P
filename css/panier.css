@@ -3,4 +3,37 @@
 .qty{display:flex;align-items:center;gap:10px}.qty button{width:34px;height:34px;border-radius:50%;border:1px solid #ffffff30;background:#ffffff10;color:#fff;font-size:1.1rem;cursor:pointer}
 .sum{background:var(--bg2);border-radius:var(--r);padding:20px;margin-top:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px}
 .empty{text-align:center;padding:50px 0;color:var(--mut)}
-.fg{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}.chk{display:flex;gap:10px;align-items:flex-start;color:#cfcfe0}.chk input{width:auto;margin-top:5px}#of label{color:var(--mut)}#of .warn{margin:12px 0}@media(max-width:600px){.fg{grid-template-columns:1fr}}
+/* Étapes */
+.steps{display:flex;gap:6px 22px;list-style:none;padding:0;margin:0 0 20px;counter-reset:s;flex-wrap:wrap}
+.steps li{counter-increment:s;display:flex;align-items:center;gap:8px;color:var(--mut);font-weight:600}
+.steps li::before{content:counter(s);width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:#ffffff14;font-size:.85rem;transition:.3s}
+.steps li.on{color:#fff}.steps li.on::before{background:linear-gradient(135deg,#ff3b6b,#7a5cff);box-shadow:0 0 18px #7a5cff88}
+.steps li.done{color:#cfcfe0}.steps li.done::before{content:"✓";background:#2fd47a;color:#04210f}
+/* Carte du formulaire : bordure dégradée animée */
+.co{margin-top:28px;padding:2px;border-radius:26px;background:linear-gradient(120deg,#ff3b6b,#7a5cff,#38d6ff,#ff3b6b);background-size:300% 300%;animation:flow 9s linear infinite;box-shadow:0 20px 60px #7a5cff33}
+@keyframes flow{50%{background-position:100% 50%}}
+.co-in{background:radial-gradient(circle at 100% 0,#7a5cff22,transparent 50%),#12121a;border-radius:24px;padding:30px}
+.co-in h2{margin:0 0 4px;font-size:1.6rem}.sub{margin-bottom:14px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}.chip{background:#ffffff12;border:1px solid #ffffff1f;border-radius:99px;padding:4px 14px;font-size:.88rem}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+.fld{position:relative;display:block;margin:14px 0}
+.fld .ic{position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:1.1rem;pointer-events:none}
+.fld input,.fld textarea{width:100%;padding:22px 16px 8px 48px;border-radius:14px;border:1px solid #ffffff22;background:#0b0b11;color:#fff;font:inherit;transition:.2s}
+.fld textarea{resize:vertical;padding-top:26px}
+.fld .lb{position:absolute;left:48px;top:50%;transform:translateY(-50%);color:var(--mut);transition:.2s;pointer-events:none}
+.fld.ta .ic{top:22px;transform:none}.fld.ta .lb{top:20px;transform:none}
+.fld input:focus,.fld textarea:focus{outline:0;border-color:#7a5cff;box-shadow:0 0 0 3px #7a5cff44}
+.fld input:focus+.lb,.fld input:not(:placeholder-shown)+.lb,.fld textarea:focus+.lb,.fld textarea:not(:placeholder-shown)+.lb{top:8px;transform:none;font-size:.72rem;color:#b9a8ff}
+/* Interrupteurs */
+.tg{position:relative;display:flex;gap:12px;align-items:flex-start;margin:14px 0;color:#cfcfe0;cursor:pointer;font-size:.92rem}
+.tg input{position:absolute;opacity:0;width:44px;height:26px;margin:0}
+.tg i{flex:none;width:44px;height:26px;border-radius:99px;background:#ffffff22;position:relative;transition:.25s}
+.tg i::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.25s}
+.tg input:checked+i{background:linear-gradient(135deg,#ff3b6b,#7a5cff)}.tg input:checked+i::after{transform:translateX(18px)}
+.tg input:focus-visible+i{outline:2px solid #fff;outline-offset:2px}
+.co-in .warn{margin:14px 0}.btn.big{width:100%;padding:16px;font-size:1.1rem;margin-top:6px}.btn:disabled{opacity:.6;cursor:wait;transform:none}
+/* Confirmation */
+.ok{text-align:center;padding:50px 10px}.ok svg{width:100px;margin:0 auto 10px}
+.ok .c{stroke-dasharray:166;stroke-dashoffset:166;animation:dr .7s .1s forwards}.ok .t{stroke-dasharray:48;stroke-dashoffset:48;animation:dr .4s .7s forwards}
+@keyframes dr{to{stroke-dashoffset:0}}
+@media(max-width:600px){.fg{grid-template-columns:1fr}.co-in{padding:22px 18px}}
