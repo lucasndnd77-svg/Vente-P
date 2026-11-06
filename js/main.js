@@ -3,23 +3,23 @@ const PRICE=13;                 // prix unitaire en euros (modifiable)
 const CONTACT_EMAIL='';         // ← mettez votre adresse e-mail de contact ici
 const SALES_BASE={};            // ventes de départ par goût, ex. {'cherry-ice':12,'luv-66':7}
 const RAW=[
-"Strawberry Kiwi|#ff3b52|#3ddc84|Fraise sucrée et kiwi acidulé, un duo vif et rafraîchissant.",
-"Mixed Berry|#8a4dff|#3d8bff|Assortiment de baies rouges et bleues, doux et fruité.",
-"Strawberry Watermelon|#ff3b6b|#2fd47a|Fraise mûre et pastèque juteuse, l'équilibre estival.",
-"Peach Berry|#ff9a76|#b04dff|Pêche tendre mêlée à des baies sauvages.",
-"Dragon Ice|#ff3d9a|#38d6ff|Fruit du dragon exotique avec une touche glacée.",
-"Blackberry Red Raspberry|#5b2a86|#ff3b5c|Mûre profonde et framboise rouge intense.",
-"Blueberry Pomegranate Ice|#3d5bff|#d4194f|Myrtille, grenade et fraîcheur glacée.",
-"Mango Passion Fruit|#ff9f1c|#ffe14d|Mangue ensoleillée et fruit de la passion.",
-"Watermelon Mango Peach|#ff4d5e|#ffb347|Trio gourmand de pastèque, mangue et pêche.",
-"Blueberry Raspberry Cherry|#4a5bff|#e0245e|Myrtille, framboise et cerise : le trio des baies.",
-"Cherry Ice|#e0143c|#3da5ff|Cerise éclatante sur fond de fraîcheur glacée.",
-"Watermelon Ice|#2fd47a|#ff3b5c|Pastèque désaltérante et sensation glacée.",
-"Watermelon Bubblegum|#ff6ec7|#2fd47a|Pastèque sucrée aux notes de chewing-gum.",
-"Cherry Watermelon Freeze|#c4122f|#5be3c1|Cerise et pastèque en version très fraîche.",
-"Blueberry Sour Raspberry|#3f5bff|#ff3d8b|Myrtille et framboise avec un côté acidulé.",
-"Fizzy Cherry Cola|#d4142f|#ff9d3d|Cerise pétillante façon cola.",
-"Luv 66|#ff2d6f|#7a2dff|Un mélange mystère à l'identité bien à lui."];
+"Strawberry Kiwi|#e92420|#efa639|Fraise sucrée et kiwi acidulé, un duo vif et rafraîchissant.",
+"Mixed Berry|#e94f20|#efce39|Assortiment de baies rouges et bleues, doux et fruité.",
+"Strawberry Watermelon|#e92420|#efa639|Fraise mûre et pastèque juteuse, l'équilibre estival.",
+"Peach Berry|#e92720|#efa939|Pêche tendre mêlée à des baies sauvages.",
+"Dragon Ice|#e92420|#efa639|Fruit du dragon exotique avec une touche glacée.",
+"Blackberry Red Raspberry|#e92720|#39acef|Mûre profonde et framboise rouge intense.",
+"Blueberry Pomegranate Ice|#20bde9|#395def|Myrtille, grenade et fraîcheur glacée.",
+"Mango Passion Fruit|#20e9b7|#39b2ef|Mangue ensoleillée et fruit de la passion.",
+"Watermelon Mango Peach|#e92420|#efa639|Trio gourmand de pastèque, mangue et pêche.",
+"Blueberry Raspberry Cherry|#20bae9|#395aef|Myrtille, framboise et cerise : le trio des baies.",
+"Cherry Ice|#20d8e9|#3976ef|Cerise éclatante sur fond de fraîcheur glacée.",
+"Watermelon Ice|#e92020|#efa339|Pastèque désaltérante et sensation glacée.",
+"Watermelon Bubblegum|#e92420|#efa639|Pastèque sucrée aux notes de chewing-gum.",
+"Cherry Watermelon Freeze|#e98820|#ef3942|Cerise et pastèque en version très fraîche.",
+"Blueberry Sour Raspberry|#20b7e9|#3957ef|Myrtille et framboise avec un côté acidulé.",
+"Fizzy Cherry Cola|#e97420|#efef39|Cerise pétillante façon cola.",
+"Luv 66|#20e9b3|#39ef45|Un mélange mystère à l'identité bien à lui."];
 const slug=n=>n.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const store={get(k,d){try{const v=JSON.parse(localStorage.getItem(k));return v===null?d:v}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}}};
@@ -36,6 +36,21 @@ const imgCls=p=>isPhoto(p)?' class="photo"':'';
 /* Chaque puff est vendue avec 2 recharges du même goût, ajoutées automatiquement */
 const RECHARGES=2;
 const packHTML=(p,n=1)=>`<span class="pack">🧴 + ${n*RECHARGES} recharge${n*RECHARGES>1?'s':''} incluse${n*RECHARGES>1?'s':''}</span>`;
+/* Thème de couleurs tiré de l'image de la puff : teinte dominante (c1) + teinte secondaire (c2) */
+function themeFromImage(src){
+ const key='jnr_theme_'+src,cached=store.get(key,null);if(cached)return Promise.resolve(cached);
+ return new Promise(ok=>{const im=new Image();im.onload=()=>{try{
+  const W=48,H=64,c=document.createElement('canvas');c.width=W;c.height=H;const g=c.getContext('2d');g.drawImage(im,0,0,W,H);
+  const d=g.getImageData(0,0,W,H).data,bins=new Float64Array(36),hs=[...Array(36)].map(()=>[]);
+  for(let i=0;i<d.length;i+=4){if(d[i+3]<200)continue;const r=d[i]/255,gg=d[i+1]/255,b=d[i+2]/255,mx=Math.max(r,gg,b),mn=Math.min(r,gg,b),l=(mx+mn)/2,dl=mx-mn;if(dl<.12)continue;
+   const s=dl/(1-Math.abs(2*l-1));if(s<.3||l<.12||l>.85)continue;
+   let h=mx===r?((gg-b)/dl)%6:mx===gg?(b-r)/dl+2:(r-gg)/dl+4;h=(h*60+360)%360;const w=s*(1-Math.abs(l-.5));const k=Math.floor(h/10)%36;bins[k]+=w;hs[k].push(h)}
+  const dist=(a,b)=>{const x=Math.abs(a-b)%360;return x>180?360-x:x},hueOf=k=>{const a=hs[k];if(!a.length)return k*10+5;let sx=0,sy=0;a.forEach(h=>{sx+=Math.cos(h*Math.PI/180);sy+=Math.sin(h*Math.PI/180)});return (Math.atan2(sy,sx)*180/Math.PI+360)%360};
+  let k1=0;bins.forEach((v,k)=>{if(v>bins[k1])k1=k});if(!bins[k1])return ok(null);
+  const h1=hueOf(k1);let k2=-1;bins.forEach((v,k)=>{if(dist(k*10+5,h1)>=35&&v>=bins[k1]*.12&&(k2<0||v>bins[k2]))k2=k});
+  const h2=k2<0?(h1+35)%360:hueOf(k2),t={c1:`hsl(${h1|0} 82% 52%)`,c2:`hsl(${h2|0} 85% 58%)`};
+  store.set(key,t);ok(t)}catch(e){ok(null)}};im.onerror=()=>ok(null);im.src=src})}
+function applyTheme(t,...els){if(!t)return;[document.body,...els].forEach(e=>{e.style.setProperty('--c1',t.c1);e.style.setProperty('--c2',t.c2)});document.body.classList.add('themed')}
 /* Prix */
 const eur=n=>n.toLocaleString('fr-FR',{style:'currency',currency:'EUR'});
 const priceOf=p=>p.price||PRICE;

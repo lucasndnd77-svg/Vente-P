@@ -15,6 +15,9 @@ else{document.title=p.name+' – JNR';
  </div>
  <h2>Informations</h2><ul><li>Produit contenant de la nicotine (1 % ou 2 % au choix).</li><li>Chaque puff est livrée avec <b>${RECHARGES} recharges ${esc(p.name)}</b>, ajoutées automatiquement à votre commande.</li><li>Composition et contenance : se référer à l'emballage officiel.</li></ul>
  <div class="warn">⚠️ La nicotine est très addictive. Interdit aux mineurs. <a href="informations.html" style="text-decoration:underline">En savoir plus</a></div></div></div>`;
+ /* toute la page prend les couleurs de la puff : d'abord celles du catalogue, puis celles lues dans l'image */
+ const pf=box.querySelector('.pf');applyTheme({c1:p.c1,c2:p.c2},pf);
+ if(isPhoto(p))themeFromImage(imgOf(p)).then(t=>applyTheme(t,pf));
  const n=document.getElementById('n'),clamp=v=>Math.max(1,Math.min(99,parseInt(v)||1));
  const upd=()=>{const q=clamp(n.value);document.getElementById('bbTot').textContent=eur(priceOf(p)*q);document.getElementById('bbRec').textContent='+ '+q*RECHARGES+' recharges incluses'};
  box.querySelectorAll('.stepper button').forEach(b=>b.onclick=()=>{n.value=clamp(+n.value+ +b.dataset.s);upd();n.classList.remove('pop');void n.offsetWidth;n.classList.add('pop')});
