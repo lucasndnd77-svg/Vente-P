@@ -1,6 +1,6 @@
 /* JNR – fonctions communes : données, stockage, panier, prix, ventes, en-tête/pied de page */
 const PRICE=13;                 // prix unitaire en euros (modifiable)
-const CONTACT_EMAIL='';         // ← mettez votre adresse e-mail de contact ici
+const CONTACT_EMAIL='lucasndnd77@gmail.com';         // ← mettez votre adresse e-mail de contact ici
 const SALES_BASE={};            // ventes de départ par goût, ex. {'cherry-ice':12,'luv-66':7}
 const RAW=[
 "Strawberry Kiwi|#e92720|#efa939|Fraise sucrée et kiwi acidulé, un duo vif et rafraîchissant.",
@@ -111,5 +111,5 @@ document.addEventListener('DOMContentLoaded',()=>{
  const pv=document.getElementById('preview');
  if(pv){pv.innerHTML=ranked().slice(0,4).map(cardHTML).join('');if(pv.previousElementSibling)pv.previousElementSibling.textContent='Les goûts préférés de nos clients';observeReveal()}
  const ct=document.getElementById('contact');
- if(ct&&CONTACT_EMAIL)ct.insertAdjacentHTML('beforeend','<p class="lead2">Une question ? Écrivez-nous : <a href="mailto:'+esc(CONTACT_EMAIL)+'" style="text-decoration:underline">'+esc(CONTACT_EMAIL)+'</a></p>');
+ if(ct&&CONTACT_EMAIL)ct.insertAdjacentHTML('beforeend','<p class="lead2" style="margin-top:12px">Une question ? Écrivez-nous : <a href="mailto:'+esc(CONTACT_EMAIL)+'" style="text-decoration:underline">'+esc(CONTACT_EMAIL)+'</a></p>');
 });
