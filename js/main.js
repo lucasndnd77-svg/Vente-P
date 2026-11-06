@@ -3,7 +3,7 @@ const PRICE=13;                 // prix unitaire en euros (modifiable)
 const CONTACT_EMAIL='';         // ← mettez votre adresse e-mail de contact ici
 const SALES_BASE={};            // ventes de départ par goût, ex. {'cherry-ice':12,'luv-66':7}
 const RAW=[
-"Strawberry Kiwi|#e92420|#efa639|Fraise sucrée et kiwi acidulé, un duo vif et rafraîchissant.",
+"Strawberry Kiwi|#e92720|#efa939|Fraise sucrée et kiwi acidulé, un duo vif et rafraîchissant.",
 "Mixed Berry|#209ce9|#ef4239|Assortiment de baies rouges et bleues, doux et fruité.",
 "Strawberry Watermelon|#e92420|#efa639|Fraise mûre et pastèque juteuse, l'équilibre estival.",
 "Peach Berry|#e92720|#efa939|Pêche tendre mêlée à des baies sauvages.",
@@ -13,7 +13,7 @@ const RAW=[
 "Mango Passion Fruit|#20e9bd|#39acef|Mangue ensoleillée et fruit de la passion.",
 "Watermelon Mango Peach|#e92720|#efa939|Trio gourmand de pastèque, mangue et pêche.",
 "Blueberry Raspberry Cherry|#20c1e9|#394eef|Myrtille, framboise et cerise : le trio des baies.",
-"Cherry Ice|#20d8e9|#3976ef|Cerise éclatante sur fond de fraîcheur glacée.",
+"Cherry Ice|#20bae9|#395aef|Cerise éclatante sur fond de fraîcheur glacée.",
 "Watermelon Ice|#e92420|#efa639|Pastèque désaltérante et sensation glacée.",
 "Watermelon Bubblegum|#e92720|#efa939|Pastèque sucrée aux notes de chewing-gum.",
 "Cherry Watermelon Freeze|#e92a20|#3969ef|Cerise et pastèque en version très fraîche.",
@@ -30,7 +30,7 @@ const saveCatalog=c=>store.set('jnr_catalog',c);
 const PHOTOS=new Set(['strawberry-kiwi','mixed-berry','strawberry-watermelon','peach-berry','dragon-ice','blackberry-red-raspberry','blueberry-pomegranate-ice','mango-passion-fruit','watermelon-mango-peach','blueberry-raspberry-cherry','cherry-ice','watermelon-ice','watermelon-bubblegum','cherry-watermelon-freeze','blueberry-sour-raspberry','fizzy-cherry-cola','luv-66']);
 const isPhoto=p=>!p.img&&PHOTOS.has(p.id);
 /* IMG_V : augmentez ce numéro à chaque remplacement d'image pour forcer les navigateurs à recharger */
-const IMG_V=5;
+const IMG_V=6;
 const imgOf=p=>p.img||`images/produits/${p.id}.${PHOTOS.has(p.id)?'png':'svg'}?v=${IMG_V}`;
 const imgCls=p=>isPhoto(p)?' class="photo"':'';
 /* Chaque puff est vendue avec 2 recharges du même goût, ajoutées automatiquement */
