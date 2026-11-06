@@ -12,14 +12,14 @@ const RAW=[
 "Blueberry Pomegranate Ice|#20bde9|#395def|Myrtille, grenade et fraîcheur glacée.",
 "Mango Passion Fruit|#20e9b7|#39b2ef|Mangue ensoleillée et fruit de la passion.",
 "Watermelon Mango Peach|#e92420|#efa639|Trio gourmand de pastèque, mangue et pêche.",
-"Blueberry Raspberry Cherry|#20bae9|#395aef|Myrtille, framboise et cerise : le trio des baies.",
+"Blueberry Raspberry Cherry|#20c1e9|#394eef|Myrtille, framboise et cerise : le trio des baies.",
 "Cherry Ice|#20d8e9|#3976ef|Cerise éclatante sur fond de fraîcheur glacée.",
-"Watermelon Ice|#e92020|#efa339|Pastèque désaltérante et sensation glacée.",
-"Watermelon Bubblegum|#e92420|#efa639|Pastèque sucrée aux notes de chewing-gum.",
-"Cherry Watermelon Freeze|#e98820|#ef3942|Cerise et pastèque en version très fraîche.",
-"Blueberry Sour Raspberry|#20b7e9|#3957ef|Myrtille et framboise avec un côté acidulé.",
+"Watermelon Ice|#e92420|#efa639|Pastèque désaltérante et sensation glacée.",
+"Watermelon Bubblegum|#e92720|#efa939|Pastèque sucrée aux notes de chewing-gum.",
+"Cherry Watermelon Freeze|#e92a20|#3969ef|Cerise et pastèque en version très fraîche.",
+"Blueberry Sour Raspberry|#20bde9|#ef6339|Myrtille et framboise avec un côté acidulé.",
 "Fizzy Cherry Cola|#e97420|#efef39|Cerise pétillante façon cola.",
-"Luv 66|#20e9b3|#39ef45|Un mélange mystère à l'identité bien à lui."];
+"Luv 66|#20e9ce|#ef6339|Un mélange mystère à l'identité bien à lui."];
 const slug=n=>n.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const store={get(k,d){try{const v=JSON.parse(localStorage.getItem(k));return v===null?d:v}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}}};
@@ -30,7 +30,7 @@ const saveCatalog=c=>store.set('jnr_catalog',c);
 const PHOTOS=new Set(['strawberry-kiwi','mixed-berry','strawberry-watermelon','peach-berry','dragon-ice','blackberry-red-raspberry','blueberry-pomegranate-ice','mango-passion-fruit','watermelon-mango-peach','blueberry-raspberry-cherry','cherry-ice','watermelon-ice','watermelon-bubblegum','cherry-watermelon-freeze','blueberry-sour-raspberry','fizzy-cherry-cola','luv-66']);
 const isPhoto=p=>!p.img&&PHOTOS.has(p.id);
 /* IMG_V : augmentez ce numéro à chaque remplacement d'image pour forcer les navigateurs à recharger */
-const IMG_V=3;
+const IMG_V=4;
 const imgOf=p=>p.img||`images/produits/${p.id}.${PHOTOS.has(p.id)?'png':'svg'}?v=${IMG_V}`;
 const imgCls=p=>isPhoto(p)?' class="photo"':'';
 /* Chaque puff est vendue avec 2 recharges du même goût, ajoutées automatiquement */
