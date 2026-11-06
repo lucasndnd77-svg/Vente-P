@@ -46,23 +46,9 @@ header{position:sticky;top:0;z-index:50;background:rgba(10,10,15,.8);backdrop-fi
 .info p,.info li{color:#cfcfe0;max-width:760px}.info ul{padding-left:22px}.info a{text-decoration:underline}
 footer{border-top:1px solid #ffffff14;margin-top:40px;padding:36px 20px;background:#07070b}
 .foot{display:grid;grid-template-columns:1.3fr 1fr 1.6fr;gap:28px}.foot a{display:block;color:var(--mut)}.foot a:hover{color:#fff}.foot small{color:var(--mut)}
-/* Carrousel 3D "enroulé" (accueil) */
-.c3d{--w:210px;position:relative;height:calc(var(--w)*1.95);margin-top:10px;outline:none;touch-action:pan-y;user-select:none;-webkit-user-select:none;overflow:hidden}
-.c3d:focus-visible{box-shadow:0 0 0 2px #7a5cff;border-radius:var(--r)}
-.c3d-stage{position:absolute;inset:0;perspective:1200px;perspective-origin:50% 40%}
-.c3d-ring{position:absolute;inset:0;transform-style:preserve-3d}
-.c3d-item{position:absolute;left:50%;top:42%;width:var(--w);aspect-ratio:3/4;transform-style:preserve-3d;transition:transform .6s cubic-bezier(.22,.61,.36,1),opacity .6s ease-out;will-change:transform,opacity;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.c3d-item img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 18px 24px #000a);pointer-events:none}
-.c3d-item .c3d-refl{top:auto;bottom:-100%;transform:scaleY(-1);opacity:.32;filter:blur(1px);-webkit-mask-image:linear-gradient(to top,#000 0,transparent 38%);mask-image:linear-gradient(to top,#000 0,transparent 38%)}
-.c3d-item.on img:first-child{filter:drop-shadow(0 22px 30px #000c) drop-shadow(0 0 26px color-mix(in srgb,var(--c1) 45%,transparent))}
-.c3d.dragging .c3d-item{transition:none;cursor:grabbing}
-.c3d-arrow{position:absolute;top:42%;transform:translateY(-50%);z-index:200;width:48px;height:48px;border-radius:50%;border:1px solid #ffffff26;background:#ffffff12;color:#fff;font-size:1.7rem;line-height:1;cursor:pointer;backdrop-filter:blur(8px);transition:.25s}
-.c3d-arrow:hover{background:linear-gradient(135deg,#ff3b6b,#7a5cff);border-color:transparent}
-.c3d-arrow.prev{left:8px}.c3d-arrow.next{right:8px}
-.c3d-info{text-align:center;margin-top:-10px}.c3d-info h3{font-size:1.4rem}.c3d-info p{margin:4px 0 14px}
-@media(max-width:900px){.c3d{--w:180px}}
-@media(max-width:600px){.c3d{--w:150px}.c3d-arrow{width:40px;height:40px;font-size:1.4rem}}
-@media(prefers-reduced-motion:reduce){.c3d-item{transition-duration:.01s}}
+/* Image fixe des 17 goûts dans le bandeau d'accueil (sans animation) */
+.hero-gamme{animation:none;width:100%;height:auto;filter:drop-shadow(0 30px 40px #0009)}
+@media(max-width:800px){.hero-img.hero-gamme{max-width:100%;margin:10px auto 0}}
 /* Thème de la puff choisie (fiche produit) : fond, en-tête, boutons, pied de page */
 body.themed{background:radial-gradient(circle at 12% -8%,color-mix(in srgb,var(--c1) 50%,transparent) 0,transparent 48%),radial-gradient(circle at 100% 55%,color-mix(in srgb,var(--c2) 30%,transparent) 0,transparent 42%),radial-gradient(circle at 0 100%,color-mix(in srgb,var(--c1) 22%,transparent) 0,transparent 40%),color-mix(in srgb,var(--c1) 7%,#08080c);background-attachment:fixed}
 body.themed header{background:color-mix(in srgb,var(--c1) 14%,rgba(10,10,15,.82));border-bottom-color:color-mix(in srgb,var(--c1) 45%,transparent)}
