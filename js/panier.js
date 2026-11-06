@@ -5,8 +5,8 @@ const el=document.getElementById('cart'),checkout=document.getElementById('check
 function render(){const cart=getCart(),cat=getCatalog(),items=Object.keys(cart).map(id=>({p:cat.find(x=>x.id===id),n:cart[id]})).filter(x=>x.p);
  checkout.hidden=!items.length;setStep(items.length?2:1);showChips(items);
  if(!items.length){el.innerHTML='<div class="empty"><img src="images/interface/vide.svg" alt="" width="90" style="margin:auto 0 12px;margin-inline:auto"><p>Votre sélection est vide.</p><p><a class="btn" href="catalogue.html" style="margin-top:14px">Parcourir le catalogue</a></p></div>';return}
- const total=items.reduce((a,x)=>a+x.n,0);
- el.innerHTML=items.map(({p,n})=>`<div class="row"><img src="${esc(imgOf(p))}" alt=""><a class="nm" href="produit.html?id=${encodeURIComponent(p.id)}">${esc(p.name)}</a><div class="qty"><button data-a="minus" data-id="${p.id}" aria-label="Moins">−</button><b>${n}</b><button data-a="plus" data-id="${p.id}" aria-label="Plus">+</button></div><button class="btn danger sm" data-a="del" data-id="${p.id}">Supprimer</button></div>`).join('')+`<div class="sum"><div><b>Récapitulatif</b><br><span class="mut">${items.length} goût(s) · ${total} article(s)</span></div><button class="btn ghost" data-a="clear">Vider la sélection</button></div>`}
+ const total=items.reduce((a,x)=>a+x.n,0),sum=items.reduce((a,x)=>a+priceOf(x.p)*x.n,0);
+ el.innerHTML=items.map(({p,n})=>`<div class="row"><img src="${esc(imgOf(p))}" alt=""><a class="nm" href="produit.html?id=${encodeURIComponent(p.id)}">${esc(p.name)}</a><span class="mut">${eur(priceOf(p))}</span><div class="qty"><button data-a="minus" data-id="${p.id}" aria-label="Moins">−</button><b>${n}</b><button data-a="plus" data-id="${p.id}" aria-label="Plus">+</button></div><b class="lt">${eur(priceOf(p)*n)}</b><button class="btn danger sm" data-a="del" data-id="${p.id}">Supprimer</button></div>`).join('')+`<div class="sum"><div><b>Récapitulatif</b><br><span class="mut">${items.length} goût(s) · ${total} article(s)</span></div><div class="tot">Total : ${eur(sum)}</div><button class="btn ghost" data-a="clear">Vider la sélection</button></div>`}
 el.addEventListener('click',e=>{const b=e.target.closest('button[data-a]');if(!b)return;const c=getCart(),id=b.dataset.id;
  if(b.dataset.a==='plus')c[id]=Math.min(99,(c[id]||0)+1);
  if(b.dataset.a==='minus'){c[id]=(c[id]||1)-1;if(c[id]<1)delete c[id]}
@@ -22,12 +22,13 @@ checkout.innerHTML=`<div class="co"><form id="of" class="co-in"><h2>Vos informat
 document.getElementById('of').addEventListener('submit',async e=>{
  e.preventDefault();const f=e.target,msg=document.getElementById('msg'),btn=document.getElementById('send'),d=Object.fromEntries(new FormData(f));
  if(!ORDER_CONFIG.accessKey){msg.textContent="L'envoi n'est pas configuré (clé manquante dans js/panier.js).";return}
- const cart=getCart(),cat=getCatalog(),lines=Object.keys(cart).map(id=>{const p=cat.find(x=>x.id===id);return p?cart[id]+' x '+p.name:null}).filter(Boolean);
+ const cart=getCart(),cat=getCatalog(),lines=Object.keys(cart).map(id=>{const p=cat.find(x=>x.id===id);return p?cart[id]+' x '+p.name+' ('+eur(priceOf(p))+')':null}).filter(Boolean);
  if(!lines.length){msg.textContent='Votre sélection est vide.';return}
+ const tot=Object.keys(cart).reduce((a,id)=>{const p=cat.find(x=>x.id===id);return a+(p?priceOf(p)*cart[id]:0)},0);
  btn.disabled=true;btn.textContent='Envoi en cours…';msg.textContent='';
- try{const r=await fetch('https://api.web3forms.com/submit',{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify({access_key:ORDER_CONFIG.accessKey,subject:ORDER_CONFIG.subject+' – '+d.prenom,from_name:'Site JNR',botcheck:d.botcheck?'on':'',name:d.prenom+' '+d.nom,telephone:d.tel,commande:lines.join('\n'),message:d.message||'(aucun)',majeur_confirme:'oui',envoye_le:new Date().toLocaleString('fr-FR')})});
+ try{const r=await fetch('https://api.web3forms.com/submit',{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify({access_key:ORDER_CONFIG.accessKey,subject:ORDER_CONFIG.subject+' – '+d.prenom,from_name:'Site JNR',botcheck:d.botcheck?'on':'',name:d.prenom+' '+d.nom,telephone:d.tel,commande:lines.join('\n'),total:eur(tot),message:d.message||'(aucun)',majeur_confirme:'oui',envoye_le:new Date().toLocaleString('fr-FR')})});
   const j=await r.json();if(!j.success)throw new Error(j.message);
-  saveCart({});checkout.hidden=true;setStep(4);window.scrollTo({top:0,behavior:'smooth'});
-  el.innerHTML='<div class="ok"><svg viewBox="0 0 52 52"><circle class="c" cx="26" cy="26" r="25" fill="none" stroke="#2fd47a" stroke-width="2"/><path class="t" fill="none" stroke="#2fd47a" stroke-width="3" d="M14 27l8 8 16-17"/></svg><h2>Demande envoyée !</h2><p class="mut">Merci '+esc(d.prenom)+' : le vendeur vous rappelle très vite pour finaliser votre commande.</p><p><a class="btn" href="catalogue.html" style="margin-top:16px">Retour au catalogue</a></p></div>'}
+  recordSales(cart);saveCart({});checkout.hidden=true;setStep(4);window.scrollTo({top:0,behavior:'smooth'});
+  el.innerHTML='<div class="ok"><svg viewBox="0 0 52 52"><circle class="c" cx="26" cy="26" r="25" fill="none" stroke="#2fd47a" stroke-width="2"/><path class="t" fill="none" stroke="#2fd47a" stroke-width="3" d="M14 27l8 8 16-17"/></svg><h2>Demande envoyée !</h2><p class="mut">Merci '+esc(d.prenom)+' : le vendeur vous rappelle très vite pour finaliser votre commande ('+eur(tot)+').</p><p><a class="btn" href="catalogue.html" style="margin-top:16px">Retour au catalogue</a></p></div>'}
  catch(x){msg.textContent="L'envoi a échoué : "+(x.message||'réessayez plus tard')+'.';btn.disabled=false;btn.textContent='Envoyer ma demande →'}});
 render();
