@@ -1,6 +1,6 @@
 /* Administration : les identifiants ne sont PAS stockés en clair, seulement une empreinte PBKDF2 (310 000 itérations, sel aléatoire).
    Limite de 5 essais puis blocage 15 min ; session de 30 min. Reste une protection côté navigateur, pas côté serveur. */
-const AUTH={salt:'e555060020ecc567a5fb21a84e5a7a32',iter:310000,hash:'5405d01301be768e2f31df051147628e8c6a9ba67db32cb41d194b22b212d9ad'},MAX_TRY=5,LOCK_MIN=15,SESSION_MIN=30;
+const AUTH={salt:'1708102e6a2e5a8458e6972ea3f59ae4',iter:310000,hash:'27b2b53a688bd7804963bc1a256a215821cb0e73c42dda152bb5b69be58d1f64'},MAX_TRY=5,LOCK_MIN=15,SESSION_MIN=30;
 document.head.insertAdjacentHTML('beforeend','<meta name="robots" content="noindex,nofollow">');
 const root=document.getElementById('admin');let cat=[];
 const $=s=>root.querySelector(s);

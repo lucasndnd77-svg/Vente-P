@@ -59,6 +59,31 @@ function renderLayout(){
  document.getElementById('site-footer').innerHTML=`<div class="wrap foot"><div><a class="logo" href="index.html"><img src="images/logo/logo.svg" alt="">JNR</a><p><small>Aucun paiement en ligne. Les demandes de commande sont envoyées par e-mail au vendeur.</small></p></div><div><a href="index.html">Accueil</a><a href="catalogue.html">Catalogue</a><a href="informations.html">Informations & sécurité</a><a href="panier.html">Ma sélection</a></div><div><div class="warn">⚠️ Ce produit contient de la nicotine, substance très addictive. Réservé aux adultes : interdit de vente aux mineurs.</div><p><small>Chaque puff est livrée avec ${RECHARGES} recharges du même goût. Voir « Données personnelles » dans Informations.</small></p></div></div>`;
  updateBadge();observeReveal()}
 renderLayout();
+
+/* ---- Accès privé : seules les personnes ayant le code peuvent voir le site.
+   Le code n'est pas écrit en clair, seulement son empreinte SHA-256. Mémorisé GATE_DAYS jours sur l'appareil. ---- */
+const GATE_HASH='02cbb7f5ee80fcd0f6cdfff0224cbf0ac1329d8d838040ff0f6574f9b7fa2f1c',GATE_DAYS=30;
+function sha256hex(str){const rr=(v,a)=>(v>>>a)|(v<<(32-a)),K=[];let H=[],p=2;
+ for(let c=0;c<64;p++){let pr=1;for(let d=2;d*d<=p;d++)if(p%d===0){pr=0;break}if(pr){if(c<8)H[c]=(Math.pow(p,1/2)*4294967296)|0;K[c++]=(Math.pow(p,1/3)*4294967296)|0}}
+ const m=[...new TextEncoder().encode(str)],bits=m.length*8;m.push(0x80);while(m.length%64!==56)m.push(0);m.push(0,0,0,0,(bits>>>24)&255,(bits>>>16)&255,(bits>>>8)&255,bits&255);
+ for(let j=0;j<m.length;j+=64){const w=[];for(let i=0;i<16;i++)w[i]=(m[j+4*i]<<24)|(m[j+4*i+1]<<16)|(m[j+4*i+2]<<8)|m[j+4*i+3];
+  for(let i=16;i<64;i++){const a=w[i-15],b=w[i-2];w[i]=(w[i-16]+(rr(a,7)^rr(a,18)^(a>>>3))+w[i-7]+(rr(b,17)^rr(b,19)^(b>>>10)))|0}
+  let [a,b,c,d,e,f,g,h]=H;
+  for(let i=0;i<64;i++){const t1=(h+(rr(e,6)^rr(e,11)^rr(e,25))+((e&f)^(~e&g))+K[i]+w[i])|0,t2=((rr(a,2)^rr(a,13)^rr(a,22))+((a&b)^(a&c)^(b&c)))|0;h=g;g=f;f=e;e=(d+t1)|0;d=c;c=b;b=a;a=(t1+t2)|0}
+  H=[a,b,c,d,e,f,g,h].map((v,i)=>(v+H[i])|0)}
+ return H.map(v=>(v>>>0).toString(16).padStart(8,'0')).join('')}
+function gate(){
+ const acc=store.get('jnr_access',null);
+ if(acc&&acc.h===GATE_HASH&&acc.t>Date.now()){document.body.classList.add('unlocked');return}
+ const g=document.createElement('div');g.id='gate';
+ g.innerHTML=`<form autocomplete="off"><div class="logo"><img src="images/logo/logo.svg" alt="">JNR</div><h1>Accès réservé</h1><p>Ce site est privé. Saisissez le code d'accès qui vous a été communiqué.</p><input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="••••••" aria-label="Code d'accès" required><div class="gerr" role="alert"></div><button>Entrer</button><small>Réservé aux personnes majeures. Site privé, non publicitaire, accessible uniquement sur invitation.</small></form>`;
+ document.body.appendChild(g);
+ const inp=g.querySelector('input'),err=g.querySelector('.gerr');inp.focus();
+ g.querySelector('form').onsubmit=e=>{e.preventDefault();const T=store.get('jnr_gate_try',{n:0,t:0}),now=Date.now();
+  if(T.t>now){err.textContent='Trop d\'essais. Réessayez dans '+Math.ceil((T.t-now)/6e4)+' min.';return}
+  if(sha256hex('jnr-gate:'+inp.value.trim())===GATE_HASH){store.set('jnr_gate_try',{n:0,t:0});store.set('jnr_access',{h:GATE_HASH,t:now+GATE_DAYS*864e5});document.body.classList.add('unlocked');g.remove();observeReveal()}
+  else{const n=T.n+1;store.set('jnr_gate_try',n>=5?{n:0,t:now+5*6e4}:{n,t:0});err.textContent=n>=5?'Trop d\'essais. Réessayez dans 5 min.':'Code incorrect.';inp.value='';g.classList.remove('shake');void g.offsetWidth;g.classList.add('shake')}}}
+gate();
 /* Styles prix / couronne */
 document.head.insertAdjacentHTML('beforeend','<style>.card{position:relative}.top{position:absolute;top:10px;left:10px;z-index:2;background:linear-gradient(135deg,#ffd447,#ff9f1c);color:#2a1800;font-weight:800;font-size:.8rem;padding:4px 12px;border-radius:99px;box-shadow:0 6px 16px #0007}.pr{font-size:1.15rem}.pr.big{display:block;font-size:1.7rem;margin:8px 0}.lt{min-width:80px;text-align:right}.tot{font-size:1.5rem;font-weight:800}img.photo{object-fit:contain!important;filter:drop-shadow(0 16px 22px #000b) saturate(1.05)}.cimg img.photo{padding:7% 7% 3%;transition:transform .4s}.card:hover .cimg img.photo{transform:scale(1.05) rotate(-2deg)}.pf .big:has(img.photo){background:radial-gradient(circle at 50% 35%,color-mix(in srgb,var(--c1) 45%,transparent),transparent 70%),var(--bg2)}.pf .big img.photo{padding:8%}.row img.photo{background:radial-gradient(circle,#ffffff1a,transparent 70%)}.pack{display:inline-block;margin:6px 0 2px;padding:3px 10px;border-radius:99px;background:#ffffff12;border:1px solid #ffffff22;font-size:.8rem;font-weight:600;color:#e8e8f5}.pack.big{font-size:.95rem;padding:6px 14px;margin:4px 0 10px}</style>');
 /* Accueil : goûts les plus demandés + contact ; fiche produit : prix */

@@ -10,8 +10,16 @@ PAGES
 - admin.html        administration de DÉMO : ajouter / renommer / décrire / changer l'image / supprimer / réordonner
 - informations.html avertissements nicotine, interdiction aux mineurs
 
-IDENTIFIANTS ADMIN (démo) : admin / jnr2026 – modifiables en haut de js/admin.js.
-ATTENTION : cette connexion est faite en JavaScript côté navigateur : elle ne protège RIEN. Ne l'utilisez jamais sur un vrai site de vente.
+ADMIN : page admin.html (aucun lien dans le menu : tapez l'adresse du site suivie de /admin.html).
+Les identifiants ne sont pas écrits en clair : seule leur empreinte (PBKDF2) est en haut de js/admin.js.
+Les anciens identifiants « admin / jnr2026 » ne sont plus valides.
+ATTENTION : cette connexion est faite en JavaScript côté navigateur : elle ne protège pas vraiment les données.
+
+CODE D'ACCÈS AU SITE : toutes les pages demandent un code à 6 chiffres avant d'afficher le contenu.
+Le code est mémorisé 30 jours sur l'appareil (GATE_DAYS dans js/main.js). Pour changer de code,
+il faut remplacer GATE_HASH (empreinte SHA-256 de « jnr-gate: » suivi du code).
+Les pages sont aussi marquées « noindex » et robots.txt bloque les moteurs de recherche.
+Limite : c'est une barrière côté navigateur, pas une vraie protection serveur.
 
 DONNÉES : tout est stocké dans le navigateur (localStorage) : catalogue modifié (jnr_catalog) et sélection (jnr_cart).
 Bouton « Restaurer le catalogue d'origine » dans l'admin pour tout remettre à zéro.
