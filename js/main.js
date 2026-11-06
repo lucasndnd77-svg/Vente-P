@@ -26,7 +26,14 @@ const store={get(k,d){try{const v=JSON.parse(localStorage.getItem(k));return v==
 function defaultCatalog(){return RAW.map(r=>{const[n,c1,c2,d]=r.split('|');return{id:slug(n),name:n,c1,c2,desc:d,img:null}})}
 const getCatalog=()=>store.get('jnr_catalog',null)||defaultCatalog();
 const saveCatalog=c=>store.set('jnr_catalog',c);
-const imgOf=p=>p.img||`images/produits/${p.id}.svg`;
+/* Photos réelles (PNG détourés) ; les goûts absents de la liste gardent leur illustration SVG */
+const PHOTOS=new Set(['strawberry-kiwi','mixed-berry','strawberry-watermelon','peach-berry','dragon-ice','blackberry-red-raspberry','blueberry-pomegranate-ice','mango-passion-fruit','watermelon-mango-peach','blueberry-raspberry-cherry','watermelon-ice','watermelon-bubblegum','cherry-watermelon-freeze','blueberry-sour-raspberry','fizzy-cherry-cola','luv-66']);
+const isPhoto=p=>!p.img&&PHOTOS.has(p.id);
+const imgOf=p=>p.img||`images/produits/${p.id}.${PHOTOS.has(p.id)?'png':'svg'}`;
+const imgCls=p=>isPhoto(p)?' class="photo"':'';
+/* Chaque puff est vendue avec 2 recharges du même goût, ajoutées automatiquement */
+const RECHARGES=2;
+const packHTML=(p,n=1)=>`<span class="pack">🧴 + ${n*RECHARGES} recharge${n*RECHARGES>1?'s':''} incluse${n*RECHARGES>1?'s':''}</span>`;
 /* Prix */
 const eur=n=>n.toLocaleString('fr-FR',{style:'currency',currency:'EUR'});
 const priceOf=p=>p.price||PRICE;
@@ -43,17 +50,17 @@ const cartCount=()=>Object.values(getCart()).reduce((a,b)=>a+b,0);
 function addToCart(id,q=1){const c=getCart();c[id]=Math.min(99,(c[id]||0)+q);saveCart(c);toast('Ajouté à la sélection ✓')}
 function updateBadge(){const b=document.getElementById('badge');if(b)b.textContent=cartCount()}
 function toast(m){let t=document.getElementById('toast');if(!t){t=document.createElement('div');t.id='toast';document.body.appendChild(t)}t.textContent=m;t.className='show';clearTimeout(t._t);t._t=setTimeout(()=>t.className='',1800)}
-function cardHTML(p){const u='produit.html?id='+encodeURIComponent(p.id),top=p.id===topId()?'<span class="top">👑 Top vente</span>':'';return `<article class="card rv" style="--c1:${esc(p.c1)};--c2:${esc(p.c2)}">${top}<a class="cimg" href="${u}"><img src="${esc(imgOf(p))}" alt="Illustration ${esc(p.name)}" loading="lazy"></a><div class="cbody"><h3>${esc(p.name)}</h3><b class="pr">${eur(priceOf(p))}</b><p>${esc(p.desc)}</p><a class="btn sm" href="${u}">Voir la fiche</a></div></article>`}
+function cardHTML(p){const u='produit.html?id='+encodeURIComponent(p.id),top=p.id===topId()?'<span class="top">👑 Top vente</span>':'';return `<article class="card rv" style="--c1:${esc(p.c1)};--c2:${esc(p.c2)}">${top}<a class="cimg" href="${u}"><img src="${esc(imgOf(p))}"${imgCls(p)} alt="${isPhoto(p)?'Photo':'Illustration'} ${esc(p.name)}" loading="lazy"></a><div class="cbody"><h3>${esc(p.name)}</h3><b class="pr">${eur(priceOf(p))}</b>${packHTML(p)}<p>${esc(p.desc)}</p><a class="btn sm" href="${u}">Voir la fiche</a></div></article>`}
 function observeReveal(){const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.1});document.querySelectorAll('.rv:not(.in)').forEach(el=>io.observe(el))}
 function renderLayout(){
  const page=location.pathname.split('/').pop()||'index.html';
  const L=[['index.html','Accueil'],['catalogue.html','Catalogue'],['informations.html','Informations'],['index.html#contact','Contact']];
  document.getElementById('site-header').innerHTML=`<div class="wrap nav"><a class="logo" href="index.html"><img src="images/logo/logo.svg" alt="">JNR</a><button class="burger" aria-label="Menu" onclick="this.nextElementSibling.classList.toggle('open')">☰</button><ul>${L.map(([h,t])=>`<li><a href="${h}" class="${h===page?'on':''}">${t}</a></li>`).join('')}<li><a href="panier.html" class="${page==='panier.html'?'on':''}">Sélection <span id="badge">0</span></a></li></ul></div>`;
- document.getElementById('site-footer').innerHTML=`<div class="wrap foot"><div><a class="logo" href="index.html"><img src="images/logo/logo.svg" alt="">JNR</a><p><small>Aucun paiement en ligne. Les demandes de commande sont envoyées par e-mail au vendeur.</small></p></div><div><a href="index.html">Accueil</a><a href="catalogue.html">Catalogue</a><a href="informations.html">Informations & sécurité</a><a href="panier.html">Ma sélection</a></div><div><div class="warn">⚠️ Ce produit contient de la nicotine, substance très addictive. Réservé aux adultes : interdit de vente aux mineurs.</div><p><small>Illustrations originales, non officielles. Voir « Données personnelles » dans Informations.</small></p></div></div>`;
+ document.getElementById('site-footer').innerHTML=`<div class="wrap foot"><div><a class="logo" href="index.html"><img src="images/logo/logo.svg" alt="">JNR</a><p><small>Aucun paiement en ligne. Les demandes de commande sont envoyées par e-mail au vendeur.</small></p></div><div><a href="index.html">Accueil</a><a href="catalogue.html">Catalogue</a><a href="informations.html">Informations & sécurité</a><a href="panier.html">Ma sélection</a></div><div><div class="warn">⚠️ Ce produit contient de la nicotine, substance très addictive. Réservé aux adultes : interdit de vente aux mineurs.</div><p><small>Chaque puff est livrée avec ${RECHARGES} recharges du même goût. Voir « Données personnelles » dans Informations.</small></p></div></div>`;
  updateBadge();observeReveal()}
 renderLayout();
 /* Styles prix / couronne */
-document.head.insertAdjacentHTML('beforeend','<style>.card{position:relative}.top{position:absolute;top:10px;left:10px;z-index:2;background:linear-gradient(135deg,#ffd447,#ff9f1c);color:#2a1800;font-weight:800;font-size:.8rem;padding:4px 12px;border-radius:99px;box-shadow:0 6px 16px #0007}.pr{font-size:1.15rem}.pr.big{display:block;font-size:1.7rem;margin:8px 0}.lt{min-width:80px;text-align:right}.tot{font-size:1.5rem;font-weight:800}</style>');
+document.head.insertAdjacentHTML('beforeend','<style>.card{position:relative}.top{position:absolute;top:10px;left:10px;z-index:2;background:linear-gradient(135deg,#ffd447,#ff9f1c);color:#2a1800;font-weight:800;font-size:.8rem;padding:4px 12px;border-radius:99px;box-shadow:0 6px 16px #0007}.pr{font-size:1.15rem}.pr.big{display:block;font-size:1.7rem;margin:8px 0}.lt{min-width:80px;text-align:right}.tot{font-size:1.5rem;font-weight:800}img.photo{object-fit:contain!important;filter:drop-shadow(0 16px 22px #000b) saturate(1.05)}.cimg img.photo{padding:7% 7% 3%;transition:transform .4s}.card:hover .cimg img.photo{transform:scale(1.05) rotate(-2deg)}.pf .big:has(img.photo){background:radial-gradient(circle at 50% 35%,color-mix(in srgb,var(--c1) 45%,transparent),transparent 70%),var(--bg2)}.pf .big img.photo{padding:8%}.row img.photo{background:radial-gradient(circle,#ffffff1a,transparent 70%)}.pack{display:inline-block;margin:6px 0 2px;padding:3px 10px;border-radius:99px;background:#ffffff12;border:1px solid #ffffff22;font-size:.8rem;font-weight:600;color:#e8e8f5}.pack.big{font-size:.95rem;padding:6px 14px;margin:4px 0 10px}</style>');
 /* Accueil : goûts les plus demandés + contact ; fiche produit : prix */
 document.addEventListener('DOMContentLoaded',()=>{
  const pv=document.getElementById('preview');

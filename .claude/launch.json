@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "site-jnr",
+      "runtimeExecutable": "powershell",
+      "runtimeArgs": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "C:\\Users\\jerem\\AppData\\Local\\Temp\\claude\\b1f6e4b46526c68a\\ca4070c1-fa23-4536-af80-f8cf57ae2d86\\scratchpad\\serve.ps1", "-Root", "C:\\Users\\jerem\\Documents\\Vente P\\Vente-P"],
+      "port": 8765
+    }
+  ]
+}
