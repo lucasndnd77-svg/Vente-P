@@ -48,7 +48,8 @@ footer{border-top:1px solid #ffffff14;margin-top:40px;padding:36px 20px;backgrou
 .foot{display:grid;grid-template-columns:1.3fr 1fr 1.6fr;gap:28px}.foot a{display:block;color:var(--mut)}.foot a:hover{color:#fff}.foot small{color:var(--mut)}
 /* Image fixe des 17 goûts dans le bandeau d'accueil (sans animation) */
 .hero-gamme{animation:none;width:100%;height:auto;filter:drop-shadow(0 30px 40px #0009)}
-@media(max-width:800px){.hero-img.hero-gamme{max-width:100%;margin:10px auto 0}}
+.hero-in:has(.hero-gamme){grid-template-columns:.85fr 1.15fr}
+@media(max-width:800px){.hero-in:has(.hero-gamme){grid-template-columns:1fr}.hero-img.hero-gamme{max-width:100%;margin:10px auto 0}}
 /* Thème de la puff choisie (fiche produit) : fond, en-tête, boutons, pied de page */
 body.themed{background:radial-gradient(circle at 12% -8%,color-mix(in srgb,var(--c1) 50%,transparent) 0,transparent 48%),radial-gradient(circle at 100% 55%,color-mix(in srgb,var(--c2) 30%,transparent) 0,transparent 42%),radial-gradient(circle at 0 100%,color-mix(in srgb,var(--c1) 22%,transparent) 0,transparent 40%),color-mix(in srgb,var(--c1) 7%,#08080c);background-attachment:fixed}
 body.themed header{background:color-mix(in srgb,var(--c1) 14%,rgba(10,10,15,.82));border-bottom-color:color-mix(in srgb,var(--c1) 45%,transparent)}
