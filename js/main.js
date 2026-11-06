@@ -27,7 +27,7 @@ function defaultCatalog(){return RAW.map(r=>{const[n,c1,c2,d]=r.split('|');retur
 const getCatalog=()=>store.get('jnr_catalog',null)||defaultCatalog();
 const saveCatalog=c=>store.set('jnr_catalog',c);
 /* Photos réelles (PNG détourés) ; les goûts absents de la liste gardent leur illustration SVG */
-const PHOTOS=new Set(['strawberry-kiwi','mixed-berry','strawberry-watermelon','peach-berry','dragon-ice','blackberry-red-raspberry','blueberry-pomegranate-ice','mango-passion-fruit','watermelon-mango-peach','blueberry-raspberry-cherry','watermelon-ice','watermelon-bubblegum','cherry-watermelon-freeze','blueberry-sour-raspberry','fizzy-cherry-cola','luv-66']);
+const PHOTOS=new Set(['strawberry-kiwi','mixed-berry','strawberry-watermelon','peach-berry','dragon-ice','blackberry-red-raspberry','blueberry-pomegranate-ice','mango-passion-fruit','watermelon-mango-peach','blueberry-raspberry-cherry','cherry-ice','watermelon-ice','watermelon-bubblegum','cherry-watermelon-freeze','blueberry-sour-raspberry','fizzy-cherry-cola','luv-66']);
 const isPhoto=p=>!p.img&&PHOTOS.has(p.id);
 const imgOf=p=>p.img||`images/produits/${p.id}.${PHOTOS.has(p.id)?'png':'svg'}`;
 const imgCls=p=>isPhoto(p)?' class="photo"':'';
