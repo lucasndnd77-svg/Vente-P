@@ -4,7 +4,10 @@ OUVRIR LE SITE : décompressez le dossier, puis double-cliquez sur index.html (a
 
 PAGES
 - index.html        accueil, présentation, aperçu des goûts, contact (fictif)
-- catalogue.html    17 goûts, recherche instantanée + bouton Réinitialiser
+- catalogue.html    choix Puffs / E-liquides (catalogue.html?cat=puff ou ?cat=eliquide), recherche + filtres
+                    E-LIQUIDES : liste LIQ_RAW dans js/main.js (36 goûts, 3,50 €, 10 ml, nicotine 0/1/2 %),
+                    images dans images/eliquides/<nom>.webp. Une puff renvoie vers l'e-liquide du même goût
+                    (et inversement) ; si les noms diffèrent, voir PUFF_TO_LIQ dans js/main.js.
 - produit.html      fiche d'un goût (produit.html?id=strawberry-kiwi)
 - panier.html       sélection (localStorage) : quantités, suppression, vidage + formulaire de validation qui envoie la demande par e-mail. Aucun paiement.
 - admin.html        administration de DÉMO : ajouter / renommer / décrire / changer l'image / supprimer / réordonner

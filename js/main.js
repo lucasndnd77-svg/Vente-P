@@ -36,10 +36,61 @@ const getCatalog=()=>migrateCatalog(store.get('jnr_catalog',null))||defaultCatal
 const saveCatalog=c=>store.set('jnr_catalog',c);
 /* Photos réelles (PNG détourés) ; les goûts absents de la liste gardent leur illustration SVG */
 const PHOTOS=new Set(['strawberry-kiwi','mixed-berry','strawberry-watermelon','peach-berry','black-dragon-ice','golden-dragon-ice','blackberry-red-raspberry','blueberry-pomegranate-ice','mango-passion-fruit','watermelon-mango-peach','blueberry-raspberry-cherry','cherry-ice','watermelon-ice','watermelon-bubblegum','cherry-watermelon-freeze','blueberry-sour-raspberry','fizzy-cherry-cola','luv-66']);
-const isPhoto=p=>!p.img&&PHOTOS.has(p.id);
+const isPhoto=p=>p.kind==='liquide'||(!p.img&&PHOTOS.has(p.id));
+/* ---- E-LIQUIDES : flacons 10 ml, 3,50 €, nicotine 0 %, 1 % ou 2 %. Images : images/eliquides/<nom>.webp ----
+   Une ligne = "Nom|couleur1|couleur2|description|arômes (séparés par des virgules)" */
+const LIQ_PRICE=3.5,LIQ_NICS=['0%','1%','2%'],LIQ_ML=10,LIQ_PREFIX='el-';
+const LIQ_RAW=[
+"Black Dragon Ice|hsl(325 82% 52%)|hsl(264 85% 58%)|Fruit du dragon exotique avec une touche glacée.|dragon,exotique,glace",
+"Blackberry Red Raspberry|hsl(80 75% 45%)|hsl(251 85% 58%)|Mûre profonde et framboise rouge intense.|baies,framboise,mure,fruits-rouges",
+"Blue Razz Cherry|hsl(194 82% 52%)|hsl(350 85% 58%)|Framboise bleue acidulée et cerise gourmande.|framboise,cerise,bonbon,acidule",
+"Blue Razz Ice|hsl(194 82% 52%)|hsl(229 85% 58%)|Framboise bleue façon bonbon, avec un souffle glacé.|framboise,bonbon,glace",
+"Blueberry Cherry Cranberry|hsl(356 82% 52%)|hsl(194 85% 58%)|Myrtille, cerise et canneberge : fruité et légèrement acidulé.|myrtille,cerise,baies,fruits-rouges,acidule",
+"Blueberry Pomegranate Ice|hsl(194 82% 52%)|hsl(46 85% 58%)|Myrtille, grenade et fraîcheur glacée.|myrtille,baies,grenade,glace",
+"Blueberry Raspberry Cherry|hsl(47 82% 52%)|hsl(357 85% 58%)|Myrtille, framboise et cerise : le trio des baies.|myrtille,framboise,cerise,baies,fruits-rouges",
+"Blueberry Red Raspberry|hsl(255 82% 52%)|hsl(203 85% 58%)|Myrtille douce et framboise rouge.|myrtille,framboise,baies,fruits-rouges",
+"Blueberry Sour Raspberry|hsl(194 82% 52%)|hsl(65 85% 58%)|Myrtille et framboise avec un côté acidulé.|myrtille,framboise,acidule,baies",
+"Cherry Berry|hsl(356 82% 52%)|hsl(222 85% 58%)|Cerise juteuse et mélange de baies.|cerise,baies,fruits-rouges",
+"Cherry Ice|hsl(1 82% 52%)|hsl(226 85% 58%)|Cerise éclatante sur fond de fraîcheur glacée.|cerise,glace,fruits-rouges",
+"Cherry Watermelon Freeze|hsl(194 82% 52%)|hsl(350 85% 58%)|Cerise et pastèque en version très fraîche.|cerise,pasteque,glace,fruits-rouges",
+"Fizzy Cherry Cola|hsl(357 82% 52%)|hsl(32 85% 58%)|Cerise pétillante façon cola.|cerise,petillant,bonbon",
+"Fresh Mint|hsl(175 82% 52%)|hsl(200 85% 58%)|Menthe fraîche et pure, pour un souffle net.|menthe,glace",
+"Green Apple Peach|hsl(2 82% 52%)|hsl(125 85% 58%)|Pomme verte croquante et pêche tendre.|pomme,peche,acidule",
+"Lady Killa|hsl(336 82% 52%)|hsl(11 85% 58%)|Un mélange fruité et sucré au caractère affirmé.|bonbon,mystere,fruits-rouges",
+"Love 66|hsl(194 82% 52%)|hsl(323 85% 58%)|Un mélange mystère à l'identité bien à lui.|bonbon,mystere,exotique",
+"Mango Passion Fruit|hsl(135 82% 52%)|hsl(345 85% 58%)|Mangue ensoleillée et fruit de la passion.|mangue,exotique,passion",
+"Mixed Berries|hsl(25 82% 52%)|hsl(223 85% 58%)|Assortiment de baies rouges et bleues, doux et fruité.|baies,fruits-rouges,myrtille",
+"Mr Blue|hsl(325 82% 52%)|hsl(213 85% 58%)|Un mélange bleu et rose, fruité façon bonbon.|bonbon,mystere,baies",
+"New Blue Cherry Cranberry|hsl(265 82% 52%)|hsl(204 85% 58%)|Nouvelle recette : myrtille, cerise et canneberge.|myrtille,cerise,baies,acidule",
+"Passion Fruit Kiwi|hsl(194 82% 52%)|hsl(64 85% 58%)|Fruit de la passion et kiwi acidulé.|passion,kiwi,exotique,acidule",
+"Peach Berry|hsl(45 82% 52%)|hsl(341 85% 58%)|Pêche tendre mêlée à des baies sauvages.|peche,baies,fruits-rouges",
+"Peach Mango Pineapple|hsl(357 82% 52%)|hsl(45 85% 58%)|Pêche, mangue et ananas : un cocktail tropical.|peche,mangue,exotique,ete",
+"Strawberry Bull|hsl(342 82% 52%)|hsl(53 85% 58%)|Fraise et boisson énergisante, pétillant et sucré.|fraise,petillant,bonbon",
+"Strawberry Ice|hsl(333 82% 52%)|hsl(200 85% 58%)|Fraise mûre et fraîcheur glacée.|fraise,glace,fruits-rouges",
+"Strawberry Kiwi|hsl(55 82% 52%)|hsl(350 85% 58%)|Fraise sucrée et kiwi acidulé, un duo vif et rafraîchissant.|fraise,kiwi,fruits-rouges,acidule",
+"Strawberry Raspberry Ice|hsl(341 82% 52%)|hsl(285 85% 58%)|Fraise et framboise sur une note glacée.|fraise,framboise,glace,fruits-rouges",
+"Strawberry Watermelon Ice|hsl(354 82% 52%)|hsl(29 85% 58%)|Fraise mûre et pastèque juteuse, en version glacée.|fraise,pasteque,glace,fruits-rouges,ete",
+"Summer Holiday|hsl(195 82% 52%)|hsl(230 85% 58%)|Un mélange estival frais et fruité, goût vacances.|ete,glace,mystere,exotique",
+"Summer Peach Ice|hsl(40 82% 52%)|hsl(195 85% 58%)|Pêche d'été et touche glacée.|peche,glace,ete",
+"Watermelon Bubblegum|hsl(195 82% 52%)|hsl(352 85% 58%)|Pastèque sucrée aux notes de chewing-gum.|pasteque,bonbon,ete",
+"Watermelon Ice|hsl(13 82% 52%)|hsl(200 85% 58%)|Pastèque désaltérante et sensation glacée.|pasteque,glace,ete",
+"Watermelon Lychee|hsl(348 82% 52%)|hsl(118 85% 58%)|Pastèque juteuse et litchi parfumé.|pasteque,exotique,ete",
+"Watermelon Mango Peach|hsl(45 82% 52%)|hsl(350 85% 58%)|Trio gourmand de pastèque, mangue et pêche.|pasteque,mangue,peche,exotique,ete",
+"Wild Berries Ice|hsl(195 82% 52%)|hsl(330 85% 58%)|Baies sauvages et fraîcheur glacée.|baies,fruits-rouges,glace"];
+const LIQUIDS=LIQ_RAW.map(r=>{const[n,c1,c2,d,t]=r.split('|'),s=slug(n);return{id:LIQ_PREFIX+s,name:n,c1,c2,desc:d,kind:'liquide',price:LIQ_PRICE,img:`images/eliquides/${s}.webp`}});
+LIQ_RAW.forEach(r=>{const x=r.split('|');TASTES[LIQ_PREFIX+slug(x[0])]=x[4].split(',')});
+const getLiquids=()=>LIQUIDS;
+const isLiq=p=>!!p&&p.kind==='liquide';
+const findProduct=id=>getCatalog().find(x=>x.id===id)||LIQUIDS.find(x=>x.id===id);
+/* Puff → e-liquide du même goût (quand le nom n'est pas identique, on l'indique ici) */
+const PUFF_TO_LIQ={'mixed-berry':'mixed-berries','strawberry-watermelon':'strawberry-watermelon-ice','luv-66':'love-66'};
+const liquidFor=p=>LIQUIDS.find(x=>x.id===LIQ_PREFIX+(PUFF_TO_LIQ[p.id]||p.id));
+const puffFor=l=>getCatalog().find(p=>liquidFor(p)===l);
+const nicInfo=v=>({'0%':'0 mg/ml · sans nicotine','1%':'10 mg/ml · doux','2%':'20 mg/ml · intense'})[v]||'';
+const liqTagHTML=()=>`<span class="pack liq">💧 Flacon ${LIQ_ML} ml · 0 / 1 / 2 %</span>`;
 /* IMG_V : augmentez ce numéro à chaque remplacement d'image pour forcer les navigateurs à recharger */
 const IMG_V=7;
-const imgOf=p=>p.img||`images/produits/${p.id}.${PHOTOS.has(p.id)?'png':'svg'}?v=${IMG_V}`;
+const imgOf=p=>p.kind==='liquide'?`${p.img}?v=${IMG_V}`:p.img||`images/produits/${p.id}.${PHOTOS.has(p.id)?'png':'svg'}?v=${IMG_V}`;
 const imgCls=p=>isPhoto(p)?' class="photo"':'';
 /* Chaque puff est vendue avec 2 recharges du même goût, ajoutées automatiquement */
 const RECHARGES=2;
@@ -85,7 +136,7 @@ const stockHTML=(id,big)=>STOCK.has(id)?`<span class="instock${big?' big':''}">�
 const stockSlot=id=>`<span data-stock="${esc(id)}">${stockHTML(id)}</span>`;
 function refreshStock(){document.querySelectorAll('[data-stock]').forEach(e=>e.innerHTML=stockHTML(e.dataset.stock,e.dataset.big))}
 const stockReady=fetch('stock.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():null).then(j=>{if(j&&Array.isArray(j.enStock)){STOCK=new Set(j.enStock);store.set('jnr_stock',j.enStock);refreshStock()}return j}).catch(()=>null);
-function cardHTML(p){const u='produit.html?id='+encodeURIComponent(p.id),top=p.id===topId()?'<span class="top">👑 Top vente</span>':'';return `<article class="card rv" style="--c1:${esc(p.c1)};--c2:${esc(p.c2)}">${top}<a class="cimg" href="${u}"><img src="${esc(imgOf(p))}"${imgCls(p)} alt="${isPhoto(p)?'Photo':'Illustration'} ${esc(p.name)}" loading="lazy"></a><div class="cbody"><h3>${esc(p.name)}</h3>${stockSlot(p.id)}<b class="pr">${eur(priceOf(p))}</b>${packHTML(p)}<p>${esc(p.desc)}</p><a class="btn sm" href="${u}">Voir la fiche</a></div></article>`}
+function cardHTML(p){const u='produit.html?id='+encodeURIComponent(p.id),liq=isLiq(p),top=!liq&&p.id===topId()?'<span class="top">👑 Top vente</span>':'';return `<article class="card rv${liq?' liqcard':''}" style="--c1:${esc(p.c1)};--c2:${esc(p.c2)}">${top}<a class="cimg" href="${u}"><img src="${esc(imgOf(p))}"${imgCls(p)} alt="${isPhoto(p)?'Photo':'Illustration'} ${esc(p.name)}" loading="lazy"></a><div class="cbody"><h3>${esc(p.name)}</h3>${stockSlot(p.id)}<b class="pr">${eur(priceOf(p))}</b>${liq?liqTagHTML():packHTML(p)}<p>${esc(p.desc)}</p><a class="btn sm" href="${u}">Voir la fiche</a></div></article>`}
 function observeReveal(){const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.1});document.querySelectorAll('.rv:not(.in)').forEach(el=>io.observe(el))}
 function renderLayout(){
  const page=location.pathname.split('/').pop()||'index.html';
@@ -120,7 +171,7 @@ function gate(){
   else{const n=T.n+1;store.set('jnr_gate_try',n>=5?{n:0,t:now+5*6e4}:{n,t:0});err.textContent=n>=5?'Trop d\'essais. Réessayez dans 5 min.':'Code incorrect.';inp.value='';g.classList.remove('shake');void g.offsetWidth;g.classList.add('shake')}}}
 gate();
 /* Styles prix / couronne */
-document.head.insertAdjacentHTML('beforeend','<style>.card{position:relative}.top{position:absolute;top:10px;left:10px;z-index:2;background:linear-gradient(135deg,#ffd447,#ff9f1c);color:#2a1800;font-weight:800;font-size:.8rem;padding:4px 12px;border-radius:99px;box-shadow:0 6px 16px #0007}.pr{font-size:1.15rem}.pr.big{display:block;font-size:1.7rem;margin:8px 0}.lt{min-width:80px;text-align:right}.tot{font-size:1.5rem;font-weight:800}img.photo{object-fit:contain!important;filter:drop-shadow(0 16px 22px #000b) saturate(1.05)}.cimg img.photo{padding:7% 7% 3%;transition:transform .4s}.card:hover .cimg img.photo{transform:scale(1.05) rotate(-2deg)}.pf .big:has(img.photo){background:radial-gradient(circle at 50% 35%,color-mix(in srgb,var(--c1) 45%,transparent),transparent 70%),var(--bg2)}.pf .big img.photo{padding:8%}.row img.photo{background:radial-gradient(circle,#ffffff1a,transparent 70%)}.pack{display:inline-block;margin:6px 0 2px;padding:3px 10px;border-radius:99px;background:#ffffff12;border:1px solid #ffffff22;font-size:.8rem;font-weight:600;color:#e8e8f5}.pack.big{font-size:.95rem;padding:6px 14px;margin:4px 0 10px}.nicb{display:inline-block;margin:6px 0 2px 6px;padding:3px 10px;border-radius:99px;font-size:.8rem;font-weight:800;color:#fff;background:linear-gradient(135deg,#7a5cff,#ff3b6b)}.admin-link{text-align:center;padding:6px 20px 14px}.admin-link a{font-size:.72rem;color:#ffffff40;letter-spacing:.05em}.admin-link a:hover{color:#ffffffa0}</style>');
+document.head.insertAdjacentHTML('beforeend','<style>.card{position:relative}.top{position:absolute;top:10px;left:10px;z-index:2;background:linear-gradient(135deg,#ffd447,#ff9f1c);color:#2a1800;font-weight:800;font-size:.8rem;padding:4px 12px;border-radius:99px;box-shadow:0 6px 16px #0007}.pr{font-size:1.15rem}.pr.big{display:block;font-size:1.7rem;margin:8px 0}.lt{min-width:80px;text-align:right}.tot{font-size:1.5rem;font-weight:800}img.photo{object-fit:contain!important;filter:drop-shadow(0 16px 22px #000b) saturate(1.05)}.cimg img.photo{padding:7% 7% 3%;transition:transform .4s}.card:hover .cimg img.photo{transform:scale(1.05) rotate(-2deg)}.pf .big:has(img.photo){background:radial-gradient(circle at 50% 35%,color-mix(in srgb,var(--c1) 45%,transparent),transparent 70%),var(--bg2)}.pf .big img.photo{padding:8%}.row img.photo{background:radial-gradient(circle,#ffffff1a,transparent 70%)}.pack{display:inline-block;margin:6px 0 2px;padding:3px 10px;border-radius:99px;background:#ffffff12;border:1px solid #ffffff22;font-size:.8rem;font-weight:600;color:#e8e8f5}.pack.big{font-size:.95rem;padding:6px 14px;margin:4px 0 10px}.nicb{display:inline-block;margin:6px 0 2px 6px;padding:3px 10px;border-radius:99px;font-size:.8rem;font-weight:800;color:#fff;background:linear-gradient(135deg,#7a5cff,#ff3b6b)}.pack.liq{background:linear-gradient(135deg,#38d6ff22,#7a5cff22);border-color:#38d6ff55}.liqcard .cimg img.photo{padding:5% 14% 2%}.admin-link{text-align:center;padding:6px 20px 14px}.admin-link a{font-size:.72rem;color:#ffffff40;letter-spacing:.05em}.admin-link a:hover{color:#ffffffa0}</style>');
 /* Accueil : goûts les plus demandés + contact ; fiche produit : prix */
 document.addEventListener('DOMContentLoaded',()=>{
  const pv=document.getElementById('preview');
