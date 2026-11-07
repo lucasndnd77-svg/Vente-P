@@ -24,6 +24,15 @@
 .fld.ta .ic{top:22px;transform:none}.fld.ta .lb{top:20px;transform:none}
 .fld input:focus,.fld textarea:focus{outline:0;border-color:#7a5cff;box-shadow:0 0 0 3px #7a5cff44}
 .fld input:focus+.lb,.fld input:not(:placeholder-shown)+.lb,.fld textarea:focus+.lb,.fld textarea:not(:placeholder-shown)+.lb{top:8px;transform:none;font-size:.72rem;color:#b9a8ff}
+/* Choix du moyen de contact */
+.cm-t{margin:18px 0 10px;font-weight:700;color:#e8e8f5}
+.cms{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.cm{cursor:pointer}.cm input{position:absolute;opacity:0;pointer-events:none}
+.cm span{display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 6px;border-radius:16px;background:#0b0b11;border:1.5px solid #ffffff22;font-weight:700;font-size:.92rem;transition:.25s}
+.cm i{font-style:normal;font-size:1.4rem}
+.cm:hover span{border-color:#b9a8ff;transform:translateY(-2px)}
+.cm input:checked+span{background:linear-gradient(135deg,#ff3b6b,#7a5cff);border-color:transparent;box-shadow:0 10px 24px #7a5cff55}
+.cm input:focus-visible+span{outline:2px solid #fff;outline-offset:2px}
 /* Interrupteurs */
 .tg{position:relative;display:flex;gap:12px;align-items:flex-start;margin:14px 0;color:#cfcfe0;cursor:pointer;font-size:.92rem}
 .tg input{position:absolute;opacity:0;width:44px;height:26px;margin:0}

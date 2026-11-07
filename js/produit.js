@@ -10,8 +10,8 @@ else{document.title=p.name+' – JNR';
   <span class="lbl">Quantité</span>
   <div class="bb-row"><div class="stepper"><button type="button" data-s="-1" aria-label="Moins">−</button><input id="n" type="number" min="1" max="99" value="1" aria-label="Quantité" inputmode="numeric"><button type="button" data-s="1" aria-label="Plus">+</button></div>
    <div class="bb-sum"><span class="lbl">Total</span><b id="bbTot">${eur(priceOf(p))}</b><small id="bbRec">+ ${RECHARGES} recharges incluses</small></div></div>
-  <button class="bb-add" id="add"><span>🛒 Ajouter à la sélection</span></button>
-  <a class="bb-link" href="panier.html">Voir ma sélection →</a>
+  <button class="bb-add" id="add"><span>🛒 Ajouter au panier</span></button>
+  <a class="bb-link" href="panier.html">Aller dans votre panier →</a>
  </div>
  <h2>Informations</h2><ul><li>Produit contenant de la nicotine (1 % ou 2 % au choix).</li><li>Chaque puff est livrée avec <b>${RECHARGES} recharges ${esc(p.name)}</b>, ajoutées automatiquement à votre commande.</li><li>Composition et contenance : se référer à l'emballage officiel.</li></ul>
  <div class="warn">⚠️ La nicotine est très addictive. Interdit aux mineurs. <a href="informations.html" style="text-decoration:underline">En savoir plus</a></div></div></div>`;
@@ -24,4 +24,8 @@ else{document.title=p.name+' – JNR';
  n.oninput=upd;n.onchange=()=>{n.value=clamp(n.value);upd()};
  const add=document.getElementById('add');
  add.onclick=()=>{const nic=box.querySelector('input[name=nic]:checked').value;addToCart(p.id,clamp(n.value),nic);
-  add.classList.add('done');add.firstElementChild.textContent='✓ Ajouté ('+clamp(n.value)+' × '+nic+')';clearTimeout(add._t);add._t=setTimeout(()=>{add.classList.remove('done');add.firstElementChild.textContent='🛒 Ajouter à la sélection'},1800)}}
+  add.classList.add('done');add.firstElementChild.textContent='✓ Ajouté ('+clamp(n.value)+' × '+nic+')';clearTimeout(add._t);add._t=setTimeout(()=>{add.classList.remove('done');add.firstElementChild.textContent='🛒 Ajouter au panier'},1800)}
+ /* « Ce qui pourrait vous plaire » : goûts qui partagent le plus d'arômes, puis retour au catalogue */
+ const tg=x=>TASTES[x.id]||[],mine=tg(p),sims=getCatalog().filter(x=>x.id!==p.id).map((x,i)=>({x,i,s:tg(x).filter(t=>mine.includes(t)).length})).filter(o=>o.s>0).sort((a,b)=>b.s-a.s||a.i-b.i).slice(0,6).map(o=>o.x);
+ box.insertAdjacentHTML('beforeend',`<div class="sim"><h2>Ce qui pourrait vous plaire</h2><p class="mut">Des goûts proches de ${esc(p.name)}. Faites défiler →</p><div class="simrow">${sims.map(cardHTML).join('').replace(/class="card rv"/g,'class="card"')}<a class="simback" href="catalogue.html"><i>↩</i>Retour au catalogue<small class="mut">Voir les 17 goûts</small></a></div></div>`);
+ observeReveal()}

@@ -35,6 +35,22 @@ header{position:sticky;top:0;z-index:50;background:rgba(10,10,15,.8);backdrop-fi
 @keyframes float{50%{transform:translateY(30px)}}
 .hero-img{filter:drop-shadow(0 30px 50px #000a);animation:float 7s ease-in-out infinite}
 .feat{display:flex;gap:18px;flex-wrap:wrap;margin-top:26px}.feat div{flex:1;min-width:140px;background:var(--bg2);border-radius:var(--r);padding:20px;text-align:center;border:1px solid #ffffff12}.feat b{display:block;font-size:2rem}.feat span{color:var(--mut)}
+.feat.how div{text-align:left;min-width:220px;background:linear-gradient(160deg,#7a5cff1f,#ff3b6b12),var(--bg2);border-color:#7a5cff40}
+.feat.how b{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-size:1.3rem;margin-bottom:12px;background:linear-gradient(135deg,#ff3b6b,#7a5cff);box-shadow:0 8px 20px #7a5cff55}
+.feat.how strong{display:block;font-size:1.08rem;margin-bottom:6px}.feat.how span{font-size:.92rem;display:block}
+/* Raccourci panier dans l'en-tête (téléphone uniquement) */
+.mright{display:none;align-items:center;gap:10px}
+.mcart{position:relative;display:grid;place-items:center;width:42px;height:42px;border-radius:50%;font-size:1.2rem;background:linear-gradient(135deg,#ff3b6b,#7a5cff);box-shadow:0 6px 16px #7a5cff55}
+.mcart .badge{position:absolute;top:-4px;right:-6px;min-width:20px;height:20px;padding:0 5px;border-radius:99px;background:#fff;color:#c4123f;font-size:.72rem;font-weight:800;display:grid;place-items:center;line-height:1}
+body.themed .mcart{background:linear-gradient(135deg,var(--c1),var(--c2))}
+/* « Ce qui pourrait vous plaire » (fiche produit) */
+.sim{margin-top:50px}.sim h2{margin-bottom:4px}.sim>p{margin-bottom:16px}
+.simrow{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px 2px 18px;scrollbar-width:thin}
+.simrow>*{flex:0 0 200px;scroll-snap-align:start}
+.simrow .card:hover{transform:translateY(-4px)}.simrow .cbody p{display:none}
+.simback{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:20px;border-radius:var(--r);border:1.5px dashed #ffffff40;background:#ffffff08;font-weight:700;transition:.25s}
+.simback i{font-style:normal;width:56px;height:56px;border-radius:50%;display:grid;place-items:center;font-size:1.5rem;background:linear-gradient(135deg,var(--c1,#ff3b6b),var(--c2,#7a5cff))}
+.simback:hover{background:#ffffff14;border-color:#fff}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:22px}
 .card{--c1:#7a5cff;--c2:#ff3b6b;display:flex;flex-direction:column;background:radial-gradient(circle at 50% 0,color-mix(in srgb,var(--c1) 30%,transparent),transparent 65%),var(--bg2);border:1px solid color-mix(in srgb,var(--c1) 35%,transparent);border-radius:var(--r);overflow:hidden;box-shadow:0 10px 30px #0008;transition:transform .3s,box-shadow .3s}
 .card:hover{transform:translateY(-8px) rotateX(3deg);box-shadow:0 22px 44px color-mix(in srgb,var(--c1) 35%,#000)}
@@ -66,5 +82,5 @@ body.themed footer{background:color-mix(in srgb,var(--c1) 8%,#07070b);border-top
 body.themed .foot a:hover{color:color-mix(in srgb,var(--c1) 45%,#fff)}
 body.themed #toast{background:linear-gradient(135deg,var(--c1),var(--c2));color:#fff}
 #toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,80px);background:#fff;color:#000;padding:10px 20px;border-radius:99px;transition:.3s;z-index:99;font-weight:600}#toast.show{transform:translate(-50%,0)}
-@media(max-width:800px){.hero-in,.foot{grid-template-columns:1fr}.burger{display:block}.nav ul{display:none;position:absolute;top:66px;left:0;right:0;flex-direction:column;background:#0a0a0f;padding:18px;gap:14px;border-bottom:1px solid #ffffff14}.nav ul.open{display:flex}.grid{grid-template-columns:repeat(2,1fr);gap:14px}.hero-img{max-width:320px;margin:auto}}
+@media(max-width:800px){.hero-in,.foot{grid-template-columns:1fr}.burger{display:block}.mright{display:flex}.simrow>*{flex-basis:160px}.nav ul{display:none;position:absolute;top:66px;left:0;right:0;flex-direction:column;background:#0a0a0f;padding:18px;gap:14px;border-bottom:1px solid #ffffff14}.nav ul.open{display:flex}.grid{grid-template-columns:repeat(2,1fr);gap:14px}.hero-img{max-width:320px;margin:auto}}
 @media(max-width:420px){.grid{grid-template-columns:1fr}}
