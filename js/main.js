@@ -7,7 +7,8 @@ const RAW=[
 "Mixed Berry|#209ce9|#ef4239|Assortiment de baies rouges et bleues, doux et fruité.",
 "Strawberry Watermelon|#e92420|#efa639|Fraise mûre et pastèque juteuse, l'équilibre estival.",
 "Peach Berry|#e92720|#efa939|Pêche tendre mêlée à des baies sauvages.",
-"Dragon Ice|#e92720|#efa939|Fruit du dragon exotique avec une touche glacée.",
+"Black Dragon Ice|#e92720|#efa939|Fruit du dragon exotique avec une touche glacée.",
+"Golden Dragon Ice|#e97420|#efc439|Fruit du dragon doré, notes exotiques ensoleillées et fraîcheur glacée.",
 "Blackberry Red Raspberry|#9220e9|#ef4539|Mûre profonde et framboise rouge intense.",
 "Blueberry Pomegranate Ice|#20bae9|#395aef|Myrtille, grenade et fraîcheur glacée.",
 "Mango Passion Fruit|#20e9bd|#39acef|Mangue ensoleillée et fruit de la passion.",
@@ -21,18 +22,23 @@ const RAW=[
 "Fizzy Cherry Cola|#e97420|#efef39|Cerise pétillante façon cola.",
 "Luv 66|#20e9ce|#ef6339|Un mélange mystère à l'identité bien à lui."];
 /* Arômes de chaque goût : servent à proposer des goûts ressemblants (« Ce qui pourrait vous plaire ») */
-const TASTES={'strawberry-kiwi':['fraise','kiwi','fruits-rouges','acidule'],'mixed-berry':['baies','fruits-rouges','myrtille'],'strawberry-watermelon':['fraise','pasteque','fruits-rouges','ete'],'peach-berry':['peche','baies','fruits-rouges'],'dragon-ice':['exotique','glace'],'blackberry-red-raspberry':['baies','framboise','mure','fruits-rouges'],'blueberry-pomegranate-ice':['myrtille','baies','grenade','glace'],'mango-passion-fruit':['mangue','exotique','passion'],'watermelon-mango-peach':['pasteque','mangue','peche','exotique','ete'],'blueberry-raspberry-cherry':['myrtille','framboise','cerise','baies','fruits-rouges'],'cherry-ice':['cerise','glace','fruits-rouges'],'watermelon-ice':['pasteque','glace','ete'],'watermelon-bubblegum':['pasteque','bonbon','ete'],'cherry-watermelon-freeze':['cerise','pasteque','glace','fruits-rouges'],'blueberry-sour-raspberry':['myrtille','framboise','acidule','baies'],'fizzy-cherry-cola':['cerise','petillant','bonbon'],'luv-66':['bonbon','mystere','exotique']};
+const TASTES={'strawberry-kiwi':['fraise','kiwi','fruits-rouges','acidule'],'mixed-berry':['baies','fruits-rouges','myrtille'],'strawberry-watermelon':['fraise','pasteque','fruits-rouges','ete'],'peach-berry':['peche','baies','fruits-rouges'],'black-dragon-ice':['dragon','exotique','glace'],'golden-dragon-ice':['dragon','exotique','glace','mangue'],'blackberry-red-raspberry':['baies','framboise','mure','fruits-rouges'],'blueberry-pomegranate-ice':['myrtille','baies','grenade','glace'],'mango-passion-fruit':['mangue','exotique','passion'],'watermelon-mango-peach':['pasteque','mangue','peche','exotique','ete'],'blueberry-raspberry-cherry':['myrtille','framboise','cerise','baies','fruits-rouges'],'cherry-ice':['cerise','glace','fruits-rouges'],'watermelon-ice':['pasteque','glace','ete'],'watermelon-bubblegum':['pasteque','bonbon','ete'],'cherry-watermelon-freeze':['cerise','pasteque','glace','fruits-rouges'],'blueberry-sour-raspberry':['myrtille','framboise','acidule','baies'],'fizzy-cherry-cola':['cerise','petillant','bonbon'],'luv-66':['bonbon','mystere','exotique']};
 const slug=n=>n.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const store={get(k,d){try{const v=JSON.parse(localStorage.getItem(k));return v===null?d:v}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}}};
 function defaultCatalog(){return RAW.map(r=>{const[n,c1,c2,d]=r.split('|');return{id:slug(n),name:n,c1,c2,desc:d,img:null}})}
-const getCatalog=()=>store.get('jnr_catalog',null)||defaultCatalog();
+/* Catalogue modifié dans l'admin : corrige l'ancien « Dragon Ice » et ajoute les goûts manquants */
+function migrateCatalog(c){if(!c)return c;const def=defaultCatalog();let ch=false;
+ c.forEach(p=>{if(p.id==='dragon-ice'){Object.assign(p,{id:'black-dragon-ice',name:'Black Dragon Ice'});ch=true}});
+ def.forEach((d,i)=>{if(d.id==='golden-dragon-ice'&&!c.some(p=>p.id===d.id)){const j=c.findIndex(p=>p.id==='black-dragon-ice');c.splice(j<0?c.length:j+1,0,d);ch=true}});
+ if(ch)store.set('jnr_catalog',c);return c}
+const getCatalog=()=>migrateCatalog(store.get('jnr_catalog',null))||defaultCatalog();
 const saveCatalog=c=>store.set('jnr_catalog',c);
 /* Photos réelles (PNG détourés) ; les goûts absents de la liste gardent leur illustration SVG */
-const PHOTOS=new Set(['strawberry-kiwi','mixed-berry','strawberry-watermelon','peach-berry','dragon-ice','blackberry-red-raspberry','blueberry-pomegranate-ice','mango-passion-fruit','watermelon-mango-peach','blueberry-raspberry-cherry','cherry-ice','watermelon-ice','watermelon-bubblegum','cherry-watermelon-freeze','blueberry-sour-raspberry','fizzy-cherry-cola','luv-66']);
+const PHOTOS=new Set(['strawberry-kiwi','mixed-berry','strawberry-watermelon','peach-berry','black-dragon-ice','golden-dragon-ice','blackberry-red-raspberry','blueberry-pomegranate-ice','mango-passion-fruit','watermelon-mango-peach','blueberry-raspberry-cherry','cherry-ice','watermelon-ice','watermelon-bubblegum','cherry-watermelon-freeze','blueberry-sour-raspberry','fizzy-cherry-cola','luv-66']);
 const isPhoto=p=>!p.img&&PHOTOS.has(p.id);
 /* IMG_V : augmentez ce numéro à chaque remplacement d'image pour forcer les navigateurs à recharger */
-const IMG_V=6;
+const IMG_V=7;
 const imgOf=p=>p.img||`images/produits/${p.id}.${PHOTOS.has(p.id)?'png':'svg'}?v=${IMG_V}`;
 const imgCls=p=>isPhoto(p)?' class="photo"':'';
 /* Chaque puff est vendue avec 2 recharges du même goût, ajoutées automatiquement */
@@ -72,7 +78,14 @@ const cartCount=()=>Object.values(getCart()).reduce((a,b)=>a+b,0);
 function addToCart(id,q=1,nic=NICS[NICS.length-1]){const c=getCart(),k=cartKey(id,nic);c[k]=Math.min(99,(c[k]||0)+q);saveCart(c);toast('Ajouté au panier ✓')}
 function updateBadge(){const n=cartCount();document.querySelectorAll('#badge,.badge').forEach(b=>b.textContent=n)}
 function toast(m){let t=document.getElementById('toast');if(!t){t=document.createElement('div');t.id='toast';document.body.appendChild(t)}t.textContent=m;t.className='show';clearTimeout(t._t);t._t=setTimeout(()=>t.className='',1800)}
-function cardHTML(p){const u='produit.html?id='+encodeURIComponent(p.id),top=p.id===topId()?'<span class="top">👑 Top vente</span>':'';return `<article class="card rv" style="--c1:${esc(p.c1)};--c2:${esc(p.c2)}">${top}<a class="cimg" href="${u}"><img src="${esc(imgOf(p))}"${imgCls(p)} alt="${isPhoto(p)?'Photo':'Illustration'} ${esc(p.name)}" loading="lazy"></a><div class="cbody"><h3>${esc(p.name)}</h3><b class="pr">${eur(priceOf(p))}</b>${packHTML(p)}<p>${esc(p.desc)}</p><a class="btn sm" href="${u}">Voir la fiche</a></div></article>`}
+/* Stock : liste des goûts « En stock » publiée depuis l'administration dans le fichier stock.json.
+   Rien n'est affiché pour un goût qui n'est pas en stock. */
+let STOCK=new Set(store.get('jnr_stock',[]));
+const stockHTML=(id,big)=>STOCK.has(id)?`<span class="instock${big?' big':''}">✅ En stock · dispo tout de suite</span>`:'';
+const stockSlot=id=>`<span data-stock="${esc(id)}">${stockHTML(id)}</span>`;
+function refreshStock(){document.querySelectorAll('[data-stock]').forEach(e=>e.innerHTML=stockHTML(e.dataset.stock,e.dataset.big))}
+const stockReady=fetch('stock.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():null).then(j=>{if(j&&Array.isArray(j.enStock)){STOCK=new Set(j.enStock);store.set('jnr_stock',j.enStock);refreshStock()}return j}).catch(()=>null);
+function cardHTML(p){const u='produit.html?id='+encodeURIComponent(p.id),top=p.id===topId()?'<span class="top">👑 Top vente</span>':'';return `<article class="card rv" style="--c1:${esc(p.c1)};--c2:${esc(p.c2)}">${top}<a class="cimg" href="${u}"><img src="${esc(imgOf(p))}"${imgCls(p)} alt="${isPhoto(p)?'Photo':'Illustration'} ${esc(p.name)}" loading="lazy"></a><div class="cbody"><h3>${esc(p.name)}</h3>${stockSlot(p.id)}<b class="pr">${eur(priceOf(p))}</b>${packHTML(p)}<p>${esc(p.desc)}</p><a class="btn sm" href="${u}">Voir la fiche</a></div></article>`}
 function observeReveal(){const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.1});document.querySelectorAll('.rv:not(.in)').forEach(el=>io.observe(el))}
 function renderLayout(){
  const page=location.pathname.split('/').pop()||'index.html';

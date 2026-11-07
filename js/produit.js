@@ -3,7 +3,7 @@ const box=document.getElementById('fiche'),id=new URLSearchParams(location.searc
 if(!p){box.innerHTML='<h1>Goût introuvable</h1><p><a class="btn" href="catalogue.html">Retour au catalogue</a></p>'}
 else{document.title=p.name+' – JNR';
  const nicHTML=NICS.map((v,i)=>`<label class="seg"><input type="radio" name="nic" value="${v}" ${i===NICS.length-1?'checked':''}><span><b>${v}</b><small>${v==='1%'?'10 mg/ml · doux':'20 mg/ml · intense'}</small></span></label>`).join('');
- box.innerHTML=`<a class="back" href="catalogue.html">← Catalogue</a><div class="pf" style="--c1:${esc(p.c1)};--c2:${esc(p.c2)};margin-top:18px"><div class="big"><img src="${esc(imgOf(p))}"${imgCls(p)} alt="${esc(p.name)}"></div><div><h1>${esc(p.name)}</h1>${packHTML(p).replace('class="pack"','class="pack big"')}<p class="lead2">${esc(p.desc)}</p>
+ box.innerHTML=`<a class="back" href="catalogue.html">← Catalogue</a><div class="pf" style="--c1:${esc(p.c1)};--c2:${esc(p.c2)};margin-top:18px"><div class="big"><img src="${esc(imgOf(p))}"${imgCls(p)} alt="${esc(p.name)}"></div><div><h1>${esc(p.name)}</h1><div data-stock="${esc(p.id)}" data-big="1">${stockHTML(p.id,1)}</div>${packHTML(p).replace('class="pack"','class="pack big"')}<p class="lead2">${esc(p.desc)}</p>
  <div class="buybox">
   <div class="bb-top"><div><span class="lbl">Prix</span><b class="bb-price">${eur(priceOf(p))}</b><span class="mut"> / puff</span></div><span class="bb-gift">🎁 ${RECHARGES} recharges offertes par puff</span></div>
   <span class="lbl">Taux de nicotine</span><div class="segs" role="radiogroup" aria-label="Taux de nicotine">${nicHTML}</div>
@@ -27,5 +27,11 @@ else{document.title=p.name+' – JNR';
   add.classList.add('done');add.firstElementChild.textContent='✓ Ajouté ('+clamp(n.value)+' × '+nic+')';clearTimeout(add._t);add._t=setTimeout(()=>{add.classList.remove('done');add.firstElementChild.textContent='🛒 Ajouter au panier'},1800)}
  /* « Ce qui pourrait vous plaire » : goûts qui partagent le plus d'arômes, puis retour au catalogue */
  const tg=x=>TASTES[x.id]||[],mine=tg(p),sims=getCatalog().filter(x=>x.id!==p.id).map((x,i)=>({x,i,s:tg(x).filter(t=>mine.includes(t)).length})).filter(o=>o.s>0).sort((a,b)=>b.s-a.s||a.i-b.i).slice(0,6).map(o=>o.x);
- box.insertAdjacentHTML('beforeend',`<div class="sim"><h2>Ce qui pourrait vous plaire</h2><p class="mut">Des goûts proches de ${esc(p.name)}. Faites défiler →</p><div class="simrow">${sims.map(cardHTML).join('').replace(/class="card rv"/g,'class="card"')}<a class="simback" href="catalogue.html"><i>↩</i>Retour au catalogue<small class="mut">Voir les 17 goûts</small></a></div></div>`);
+ box.insertAdjacentHTML('beforeend',`<div class="sim"><h2>Ce qui pourrait vous plaire</h2><p class="mut">Des goûts proches de ${esc(p.name)}.</p><div class="simwrap"><button class="simnav prev" type="button" aria-label="Goût précédent">‹</button><div class="simrow">${sims.map(cardHTML).join('').replace(/class="card rv"/g,'class="card"')}<a class="simback" href="catalogue.html"><i>↩</i>Retour au catalogue<small class="mut">Voir les ${getCatalog().length} goûts</small></a></div><button class="simnav next" type="button" aria-label="Goût suivant">›</button></div></div>`);
+ /* Flèches : font défiler les goûts un par un */
+ const row=box.querySelector('.simrow'),prev=box.querySelector('.simnav.prev'),next=box.querySelector('.simnav.next');
+ const step=()=>{const a=row.children[0],b=row.children[1];return b?b.offsetLeft-a.offsetLeft:row.clientWidth};
+ const navUpd=()=>{prev.disabled=row.scrollLeft<4;next.disabled=row.scrollLeft+row.clientWidth>=row.scrollWidth-4};
+ prev.onclick=()=>row.scrollBy({left:-step(),behavior:'smooth'});next.onclick=()=>row.scrollBy({left:step(),behavior:'smooth'});
+ row.addEventListener('scroll',navUpd,{passive:true});addEventListener('resize',navUpd);navUpd();
  observeReveal()}
