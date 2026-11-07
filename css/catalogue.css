@@ -1,3 +1,18 @@
 .searchbar{display:flex;gap:10px;max-width:560px;margin:10px 0 14px}
 .searchbar input{flex:1;padding:13px 18px;border-radius:99px;border:1px solid #ffffff26;background:var(--bg2);color:#fff;font-size:1rem}
-.searchbar input:focus{outline:2px solid #7a5cff}#count{margin-bottom:18px}
+.searchbar input:focus{outline:2px solid #7a5cff}
+/* Filtres */
+.filters{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin:0 0 14px;padding:14px 16px;border-radius:20px;background:linear-gradient(150deg,#7a5cff1c,#ff3b6b10),var(--bg2);border:1px solid #7a5cff40}
+.flbl{font-weight:800;font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;color:#b9a8ff}
+.ftypes{display:flex;flex-wrap:wrap;gap:8px}
+.ft,.fstock{cursor:pointer}.ft input,.fstock input{position:absolute;opacity:0;pointer-events:none}
+.ft span{display:inline-block;padding:7px 14px;border-radius:99px;font-weight:700;font-size:.9rem;background:color-mix(in srgb,var(--fc) 12%,#0e0e15);border:1.5px solid color-mix(in srgb,var(--fc) 45%,transparent);transition:.2s}
+.ft:hover span{transform:translateY(-2px);border-color:var(--fc)}
+.ft input:checked+span{background:linear-gradient(135deg,var(--fc),color-mix(in srgb,var(--fc) 55%,#7a5cff));border-color:transparent;color:#fff;text-shadow:0 1px 3px #0007;box-shadow:0 8px 20px color-mix(in srgb,var(--fc) 40%,transparent)}
+.fstock{margin-left:auto}
+.fstock span{display:flex;align-items:center;gap:10px;font-weight:700;font-size:.9rem;padding:6px 14px 6px 6px;border-radius:99px;background:#0e0e15;border:1.5px solid #2fd47a55}
+.fstock i{width:40px;height:24px;border-radius:99px;background:#ffffff22;position:relative;transition:.25s}
+.fstock i::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:.25s}
+.fstock input:checked+span{border-color:#2fd47a}.fstock input:checked+span i{background:linear-gradient(135deg,#2fd47a,#a6f56b)}.fstock input:checked+span i::after{transform:translateX(16px)}
+.ft input:focus-visible+span,.fstock input:focus-visible+span{outline:2px solid #fff;outline-offset:2px}
+@media(max-width:800px){.ftypes{flex-wrap:nowrap;overflow-x:auto;width:100%;padding-bottom:4px;scrollbar-width:none}.ft span{white-space:nowrap}.fstock{margin-left:0}}#count{margin-bottom:18px}

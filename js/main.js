@@ -81,7 +81,7 @@ function toast(m){let t=document.getElementById('toast');if(!t){t=document.creat
 /* Stock : liste des goûts « En stock » publiée depuis l'administration dans le fichier stock.json.
    Rien n'est affiché pour un goût qui n'est pas en stock. */
 let STOCK=new Set(store.get('jnr_stock',[]));
-const stockHTML=(id,big)=>STOCK.has(id)?`<span class="instock${big?' big':''}">✅ En stock · dispo tout de suite</span>`:'';
+const stockHTML=(id,big)=>STOCK.has(id)?`<span class="instock${big?' big':''}">✅ En stock</span>`:'';
 const stockSlot=id=>`<span data-stock="${esc(id)}">${stockHTML(id)}</span>`;
 function refreshStock(){document.querySelectorAll('[data-stock]').forEach(e=>e.innerHTML=stockHTML(e.dataset.stock,e.dataset.big))}
 const stockReady=fetch('stock.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():null).then(j=>{if(j&&Array.isArray(j.enStock)){STOCK=new Set(j.enStock);store.set('jnr_stock',j.enStock);refreshStock()}return j}).catch(()=>null);
