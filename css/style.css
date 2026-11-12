@@ -65,6 +65,7 @@ body.themed .mcart{background:linear-gradient(135deg,var(--c1),var(--c2))}
 .rv{opacity:0;transform:translateY(24px);transition:opacity .6s,transform .6s}.rv.in{opacity:1;transform:none}
 .warn{background:#3a1018;border:1px solid #c4122f;border-radius:12px;padding:12px 16px;color:#ffd5db;font-size:.92rem}.warn.big{font-size:1.1rem;margin:12px 0}
 .note{background:#ffffff0d;border-left:3px solid #7a5cff;padding:10px 14px;border-radius:8px;color:#cfcfe0;margin:10px 0 20px;font-size:.92rem}
+.info .aid{list-style:none;padding:0!important;display:grid;gap:12px;max-width:760px}.info .aid li{background:var(--bg2);border:1px solid #ff3b6b55;border-left:4px solid #ff3b6b;border-radius:12px;padding:12px 16px}.info .aid li>b:first-child{display:block;color:#fff;margin-bottom:2px}
 .info p,.info li{color:#cfcfe0;max-width:760px}.info ul{padding-left:22px}.info a{text-decoration:underline}
 /* Raccourci vers le tuto sur l'accueil (caché quand le site est déjà ouvert depuis l'icône) */
 .appbanner{display:flex;align-items:center;gap:16px;margin-top:10px;padding:16px 18px;border-radius:var(--r);background:linear-gradient(135deg,#ff3b6b26,#7a5cff33),var(--bg2);border:1px solid #7a5cff66;box-shadow:0 10px 30px #7a5cff26;transition:transform .25s,box-shadow .25s}

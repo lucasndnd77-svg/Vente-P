@@ -22,7 +22,8 @@ else{const liq=isLiq(p),nics=liq?LIQ_NICS:NICS,fam=liq?getLiquids():getCatalog()
  </div>
  ${twinHTML}
  <h2>Informations</h2><ul>${info}</ul>
- <div class="warn">⚠️ La nicotine est très addictive. Interdit aux mineurs. <a href="informations.html" style="text-decoration:underline">En savoir plus</a></div></div></div>`;
+ <div class="warn">⚠️ La nicotine est très addictive. Interdit aux mineurs. <a href="informations.html" style="text-decoration:underline">En savoir plus</a></div>
+ ${liq?'<div class="warn" style="margin-top:10px">☠️ E-liquide toxique en cas d\'ingestion : à garder hors de portée des enfants. Avalé : ne pas faire vomir, appeler un centre antipoison ou le 15. <a href="informations.html#eliquide" style="text-decoration:underline">Que faire en cas d\'accident</a></div>':''}</div></div>`;
  /* toute la page prend les couleurs du produit : d'abord celles du catalogue, puis (puffs) celles lues dans l'image */
  const pf=box.querySelector('.pf');applyTheme({c1:p.c1,c2:p.c2},pf);
  if(isPhoto(p)&&!liq)themeFromImage(imgOf(p)).then(t=>applyTheme(t,pf));

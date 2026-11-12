@@ -16,6 +16,9 @@ function buildTypes(){const L=list(),has=v=>!v||L.some(p=>(TASTES[p.id]||[]).inc
 function setKind(k,push){kind=k;kinds.classList.toggle('compact',!!k);browse.hidden=!k;pick.hidden=!!k;
  kinds.querySelectorAll('.kind').forEach(b=>{b.classList.toggle('on',b.dataset.k===k);b.setAttribute('aria-selected',b.dataset.k===k)});
  if(push)history.replaceState(null,'',k?'catalogue.html?cat='+k:'catalogue.html');
+ let lw=document.getElementById('liqwarn');
+ if(!lw){lw=document.createElement('div');lw.id='liqwarn';lw.className='warn';lw.style.margin='0 0 16px';lw.innerHTML='☠️ Les e-liquides sont toxiques en cas d\'ingestion : gardez-les hors de portée des enfants. <a href="informations.html#eliquide" style="text-decoration:underline">Précautions et que faire en cas d\'accident</a>';browse.prepend(lw)}
+ lw.hidden=k!=='eliquide';
  if(k){q.placeholder=k==='puff'?'Rechercher une puff…':'Rechercher un e-liquide…';buildTypes();render()}}
 function render(){if(!kind)return;const t=norm(q.value),L=list().filter(p=>norm(p.name).includes(t)&&(!type||(TASTES[p.id]||[]).includes(type))&&(!fstock.checked||STOCK.has(p.id)));
  grid.innerHTML=L.map(cardHTML).join('');none.hidden=L.length>0;count.textContent=L.length+' '+(kind==='puff'?'puff':'e-liquide')+(L.length>1?'s':'');observeReveal()}
