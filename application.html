@@ -1,0 +1,37 @@
+<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow,noarchive"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Appli – JNR</title><link rel="icon" href="images/logo/logo.svg"><link rel="apple-touch-icon" href="images/logo/apple-touch-icon.png"><link rel="manifest" href="manifest.json"><meta name="theme-color" content="#0a0a0f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="JNR"><meta name="apple-mobile-web-app-status-bar-style" content="black"><link rel="stylesheet" href="css/style.css"></head><body><header id="site-header"></header><main>
+<section class="wrap sec info tuto"><h1>JNR sur votre écran d'accueil</h1>
+<p class="lead2">Ajoutez le site comme une appli : il s'ouvre d'un seul geste depuis l'écran d'accueil, en plein écran, et votre code d'accès reste mémorisé. Plus besoin de le retaper à chaque fois.</p>
+<div class="tabs" role="tablist"><button role="tab" data-os="ios">🍎 iPhone</button><button role="tab" data-os="android">🤖 Android / Samsung</button></div>
+
+<div class="os" data-os="ios">
+<ol class="steps">
+<li><b>1</b><div><strong>Appuyez sur « Partager »</strong><span>Dans Safari ou Chrome, ouvrez le site JNR puis touchez l'icône Partager <i class="ic">⬆︎</i> (le carré avec une flèche vers le haut), à côté de l'adresse du site. Sur certains iPhone elle est en bas de l'écran, ou dans le menu <i class="ic">•••</i>.</span></div></li>
+<li><b>2</b><div><strong>Touchez « En voir plus »</strong><span>Le menu de partage s'ouvre : touchez <i class="ic">⌄</i> « En voir plus » pour afficher toutes les options.</span></div><img src="images/tuto/iphone-partager.webp" alt="Menu Partager de Safari avec le bouton En voir plus" loading="lazy" width="923" height="2000"></li>
+<li><b>3</b><div><strong>Choisissez « Sur l'écran d'accueil »</strong><span>Faites défiler la liste et touchez la ligne avec le logo <i class="ic">⊞</i> (un carré avec un +).</span></div><img src="images/tuto/iphone-ecran-accueil.webp" alt="Liste des options avec la ligne Sur l'écran d'accueil" loading="lazy" width="923" height="2000"></li>
+<li><b>4</b><div><strong>Laissez « JNR » et touchez « Ajouter »</strong><span>Gardez le nom JNR et l'option « Ouvrir comme app web » activée, puis touchez <em>Ajouter</em> en haut à droite. L'icône JNR apparaît sur votre écran d'accueil.</span></div><img src="images/tuto/iphone-ajouter.webp" alt="Écran Sur l'écran d'accueil avec le nom JNR et le bouton Ajouter" loading="lazy" width="923" height="2000"></li>
+</ol>
+<p class="note">Sur iPhone, l'appli JNR a sa propre mémoire : à la première ouverture depuis l'icône, saisissez le code d'accès une dernière fois. Ensuite il reste enregistré.</p>
+</div>
+
+<div class="os" data-os="android">
+<h2>Avec Samsung Internet</h2>
+<ol class="steps">
+<li><b>1</b><div><strong>Ouvrez le menu</strong><span>Sur le site JNR, touchez le menu <i class="ic">☰</i> (trois traits) en bas à droite de l'écran.</span></div></li>
+<li><b>2</b><div><strong>Touchez « Ajouter la page à »</strong><span>Puis choisissez <em>Écran d'accueil</em>.</span></div></li>
+<li><b>3</b><div><strong>Confirmez avec « Ajouter »</strong><span>L'icône JNR apparaît sur votre écran d'accueil.</span></div></li>
+</ol>
+<h2>Avec Google Chrome</h2>
+<ol class="steps">
+<li><b>1</b><div><strong>Ouvrez le menu</strong><span>Sur le site JNR, touchez les trois points <i class="ic">⋮</i> en haut à droite.</span></div></li>
+<li><b>2</b><div><strong>Touchez « Ajouter à l'écran d'accueil »</strong><span>Selon la version, l'option peut s'appeler « Installer l'application ».</span></div></li>
+<li><b>3</b><div><strong>Confirmez avec « Ajouter » ou « Installer »</strong><span>L'icône JNR apparaît sur votre écran d'accueil.</span></div></li>
+</ol>
+<p class="note">Les noms des boutons peuvent changer un peu selon le téléphone et la version, mais le chemin reste le même : menu, puis « écran d'accueil ».</p>
+</div>
+</section>
+</main><footer id="site-footer"></footer><script src="js/main.js"></script><script>
+(function(){const t=document.querySelectorAll('.tabs button'),p=document.querySelectorAll('.os');
+function show(os){t.forEach(b=>b.setAttribute('aria-selected',b.dataset.os===os));p.forEach(d=>d.hidden=d.dataset.os!==os)}
+t.forEach(b=>b.onclick=()=>show(b.dataset.os));
+show(/android/i.test(navigator.userAgent)?'android':'ios')})();
+</script></body></html>
