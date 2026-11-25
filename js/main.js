@@ -167,7 +167,7 @@ renderLayout();
 
 /* ---- Accès privé : seules les personnes ayant le code peuvent voir le site.
    Le code n'est pas écrit en clair, seulement son empreinte SHA-256. Mémorisé GATE_DAYS jours sur l'appareil. ---- */
-const GATE_HASH='02cbb7f5ee80fcd0f6cdfff0224cbf0ac1329d8d838040ff0f6574f9b7fa2f1c',GATE_DAYS=30;
+const GATE_HASH='0ddda9aed9efbdda36eeeb32f1878ced270a0b262ed39779152150c356be0b0c',GATE_DAYS=30;
 function sha256hex(str){const rr=(v,a)=>(v>>>a)|(v<<(32-a)),K=[];let H=[],p=2;
  for(let c=0;c<64;p++){let pr=1;for(let d=2;d*d<=p;d++)if(p%d===0){pr=0;break}if(pr){if(c<8)H[c]=(Math.pow(p,1/2)*4294967296)|0;K[c++]=(Math.pow(p,1/3)*4294967296)|0}}
  const m=[...new TextEncoder().encode(str)],bits=m.length*8;m.push(0x80);while(m.length%64!==56)m.push(0);m.push(0,0,0,0,(bits>>>24)&255,(bits>>>16)&255,(bits>>>8)&255,bits&255);
@@ -182,7 +182,7 @@ function gate(){
  /* chaque visite prolonge la mémorisation : le code n'est redemandé qu'après GATE_DAYS jours sans venir */
  if(acc&&acc.h===GATE_HASH&&acc.t>Date.now()){store.set('jnr_access',{h:GATE_HASH,t:Date.now()+GATE_DAYS*864e5});document.body.classList.add('unlocked');return}
  const g=document.createElement('div');g.id='gate';
- g.innerHTML=`<form autocomplete="off"><div class="logo"><img src="images/logo/logo.svg" alt="">JNR</div><h1>Accès réservé</h1><p>Ce site est privé. Saisissez le code d'accès qui vous a été communiqué.</p><input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="••••••" aria-label="Code d'accès" required><div class="gerr" role="alert"></div><button>Entrer</button><small>Réservé aux personnes majeures. Site privé, non publicitaire, accessible uniquement sur invitation.</small></form>`;
+ g.innerHTML=`<form autocomplete="off"><div class="logo"><img src="images/logo/logo.svg" alt="">JNR</div><h1>Accès réservé</h1><p>Ce site est privé. Saisissez le code d'accès qui vous a été communiqué.</p><input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="••••" aria-label="Code d'accès" required><div class="gerr" role="alert"></div><button>Entrer</button><small>Réservé aux personnes majeures. Site privé, non publicitaire, accessible uniquement sur invitation.</small></form>`;
  document.body.appendChild(g);
  const inp=g.querySelector('input'),err=g.querySelector('.gerr');inp.focus();
  g.querySelector('form').onsubmit=e=>{e.preventDefault();const T=store.get('jnr_gate_try',{n:0,t:0}),now=Date.now();
