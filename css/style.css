@@ -90,6 +90,24 @@ body.themed .mcart{background:linear-gradient(135deg,var(--c1),var(--c2))}
 .hero-gamme{animation:none;width:100%;height:auto;filter:drop-shadow(0 30px 40px #0009)}
 .hero-in:has(.hero-gamme){grid-template-columns:.85fr 1.15fr}
 @media(max-width:800px){.hero-in:has(.hero-gamme){grid-template-columns:1fr}.hero-img.hero-gamme{max-width:100%;margin:10px auto 0}}
+/* PROMOTIONS : encart sur l'accueil (entre « Découvrir le catalogue » et « Informations santé »), sans animation */
+#promo-slot:empty{display:none}
+#promo-slot{display:grid;gap:12px;margin:18px 0;max-width:560px}
+.promo-card{--c1:#ff3b6b;--c2:#7a5cff;position:relative;display:flex;align-items:center;gap:14px;padding:14px 16px 14px 12px;border-radius:22px;background:linear-gradient(135deg,color-mix(in srgb,var(--c1) 30%,#15121f),color-mix(in srgb,var(--c2) 26%,#120f1a));border:1.5px solid #ffb02e;box-shadow:0 14px 34px #ff6a2a33,inset 0 1px 0 #ffffff22;transition:transform .25s,box-shadow .25s}
+.promo-card:hover{transform:translateY(-3px);box-shadow:0 20px 40px #ff6a2a55}
+.pc-txt{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}
+.pc-tag{align-self:flex-start;padding:3px 11px;border-radius:99px;font-size:.72rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#2a0a00;background:linear-gradient(135deg,#ffd447,#ff7a1c)}
+.pc-txt>b{font-size:1.15rem;line-height:1.2;margin-top:4px}.pc-txt small{color:#d9d9ea;font-size:.82rem;line-height:1.35}
+.pc-price{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-top:4px}.pc-price b{font-size:1.5rem;font-weight:900}.pc-price s{color:var(--mut);font-size:.95rem}
+.pc-price em,.promo-save{font-style:normal;font-size:.78rem;font-weight:900;padding:2px 9px;border-radius:99px;color:#04210f;background:linear-gradient(135deg,#2fd47a,#a6f56b)}
+.pc-go{font-style:normal;flex:none;width:40px;height:40px;display:grid;place-items:center;border-radius:50%;font-weight:900;background:linear-gradient(135deg,var(--c1),var(--c2));box-shadow:0 6px 16px #0007}
+/* 3 puffs du lot en éventail */
+.ptrio{display:flex;flex:none;align-items:flex-end;justify-content:center;width:96px;height:96px}
+.ptrio img{width:40px;height:84px;object-fit:contain;filter:drop-shadow(0 8px 10px #000a);margin:0 -7px}
+.ptrio img:nth-child(1){transform:rotate(-12deg)}.ptrio img:nth-child(2){position:relative;z-index:1;height:96px;width:46px}.ptrio img:nth-child(3){transform:rotate(12deg)}
+.ptrio.sm{width:70px;height:70px}.ptrio.sm img{width:30px;height:62px;margin:0 -6px}.ptrio.sm img:nth-child(2){height:70px;width:34px}
+.ptrio.lg{width:100%;height:auto;aspect-ratio:1;padding:10% 6% 8%}.ptrio.lg img{width:34%;height:auto;margin:0 -5%}.ptrio.lg img:nth-child(2){width:38%}
+@media(max-width:560px){.promo-card{gap:10px;padding:12px}.ptrio{width:76px;height:80px}.ptrio img{width:32px;height:68px}.ptrio img:nth-child(2){width:36px;height:80px}.pc-go{display:none}}
 /* Thème de la puff choisie (fiche produit) : fond, en-tête, boutons, pied de page */
 body.themed{background:radial-gradient(circle at 12% -8%,color-mix(in srgb,var(--c1) 50%,transparent) 0,transparent 48%),radial-gradient(circle at 100% 55%,color-mix(in srgb,var(--c2) 30%,transparent) 0,transparent 42%),radial-gradient(circle at 0 100%,color-mix(in srgb,var(--c1) 22%,transparent) 0,transparent 40%),color-mix(in srgb,var(--c1) 7%,#08080c);background-attachment:fixed}
 body.themed header{background:color-mix(in srgb,var(--c1) 14%,rgba(10,10,15,.82));border-bottom-color:color-mix(in srgb,var(--c1) 45%,transparent)}

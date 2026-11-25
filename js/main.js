@@ -81,7 +81,7 @@ const LIQUIDS=LIQ_RAW.map(r=>{const[n,c1,c2,d,t]=r.split('|'),s=slug(n);return{i
 LIQ_RAW.forEach(r=>{const x=r.split('|');TASTES[LIQ_PREFIX+slug(x[0])]=x[4].split(',')});
 const getLiquids=()=>LIQUIDS;
 const isLiq=p=>!!p&&p.kind==='liquide';
-const findProduct=id=>getCatalog().find(x=>x.id===id)||LIQUIDS.find(x=>x.id===id);
+const findProduct=id=>getCatalog().find(x=>x.id===id)||LIQUIDS.find(x=>x.id===id)||activePromos().find(x=>x.id===id);
 /* Puff → e-liquide du même goût (quand le nom n'est pas identique, on l'indique ici) */
 const PUFF_TO_LIQ={'mixed-berry':'mixed-berries','strawberry-watermelon':'strawberry-watermelon-ice','luv-66':'love-66'};
 const liquidFor=p=>LIQUIDS.find(x=>x.id===LIQ_PREFIX+(PUFF_TO_LIQ[p.id]||p.id));
@@ -116,7 +116,7 @@ const priceOf=p=>p.price||PRICE;
 /* Ventes : SALES_BASE + commandes validées sur ce navigateur. Le goût le plus vendu reçoit la couronne. */
 const getSales=()=>store.get('jnr_sales',{});
 const salesOf=id=>(SALES_BASE[id]||0)+(getSales()[id]||0);
-function recordSales(cart){const s=getSales();for(const k in cart){const id=parseKey(k).id;s[id]=(s[id]||0)+cart[k]}store.set('jnr_sales',s)}
+function recordSales(cart){const s=getSales();for(const k in cart){const id=parseKey(k).id,p=findProduct(id);(isPromo(p)?p.puffs.map(q=>q.id):[id]).forEach(x=>s[x]=(s[x]||0)+cart[k])}store.set('jnr_sales',s)}
 function ranked(){return getCatalog().map((p,i)=>({p,i,s:salesOf(p.id)})).sort((a,b)=>b.s-a.s||a.i-b.i).map(x=>x.p)}
 function topId(){const r=ranked()[0];return r&&salesOf(r.id)>0?r.id:null}
 /* Panier : { "idProduit|taux": quantité }, ex. {"peach-berry|2%":3} (un même goût peut être pris en 1 % et en 2 %) */
@@ -136,6 +136,25 @@ const stockHTML=(id,big)=>STOCK.has(id)?`<span class="instock${big?' big':''}">�
 const stockSlot=id=>`<span data-stock="${esc(id)}">${stockHTML(id)}</span>`;
 function refreshStock(){document.querySelectorAll('[data-stock]').forEach(e=>e.innerHTML=stockHTML(e.dataset.stock,e.dataset.big))}
 const stockReady=fetch('stock.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():null).then(j=>{if(j&&Array.isArray(j.enStock)){STOCK=new Set(j.enStock);store.set('jnr_stock',j.enStock);refreshStock()}return j}).catch(()=>null);
+/* ---- PROMOTIONS : lots de puffs à prix spécial, gérés dans l'administration et publiés dans promos.json.
+   Une promo = {id, titre, gouts:[identifiants des puffs], prix (prix du lot), actif (true = visible)}.
+   Seules les promos actives sont visibles ; une promo retirée disparaît aussi des paniers. ---- */
+const PROMO_PREFIX='promo-';
+const cleanPromos=a=>Array.isArray(a)?a.filter(x=>x&&x.id&&Array.isArray(x.gouts)&&x.gouts.length&&+x.prix>0):[];
+let PROMOS=cleanPromos(store.get('jnr_promos',[]));
+function promoProduct(pr){const ps=pr.gouts.map(id=>getCatalog().find(p=>p.id===id));if(ps.some(p=>!p))return null;
+ return{id:PROMO_PREFIX+pr.id,promoId:pr.id,name:pr.titre,kind:'promo',price:+pr.prix,puffs:ps,normal:ps.reduce((a,p)=>a+priceOf(p),0),c1:ps[0].c1,c2:ps[ps.length-1].c2,desc:ps.map(p=>p.name).join(' + '),img:null}}
+const activePromos=()=>PROMOS.filter(x=>x.actif).map(promoProduct).filter(Boolean);
+const isPromo=p=>!!p&&p.kind==='promo';
+/* Les 3 puffs du lot, en éventail */
+const trioHTML=(p,cls='')=>`<span class="ptrio ${cls}">${p.puffs.map(q=>`<img src="${esc(imgOf(q))}" alt="${esc(q.name)}" loading="lazy">`).join('')}</span>`;
+function promoCardHTML(p){const save=p.normal-p.price;return `<a class="promo-card" href="promo.html?id=${encodeURIComponent(p.promoId)}" style="--c1:${esc(p.c1)};--c2:${esc(p.c2)}">${trioHTML(p)}<span class="pc-txt"><span class="pc-tag">🔥 Promotion</span><b>${esc(p.name)}</b><small>${p.puffs.length} puffs : ${esc(p.puffs.map(q=>q.name).join(', '))}</small><span class="pc-price"><b>${eur(p.price)}</b>${save>0?`<s>${eur(p.normal)}</s><em>−${eur(save)}</em>`:''}</span></span><i class="pc-go">→</i></a>`}
+function renderPromoSlots(){document.querySelectorAll('#promo-slot').forEach(s=>s.innerHTML=activePromos().map(promoCardHTML).join(''))}
+const promosReady=fetch('promos.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():null).then(j=>{if(j&&Array.isArray(j.promos)){PROMOS=cleanPromos(j.promos);store.set('jnr_promos',PROMOS);
+  /* retire des paniers les promos qui ne sont plus en ligne */
+  const c=getCart();let ch=false;Object.keys(c).forEach(k=>{const id=parseKey(k).id;if(id.startsWith(PROMO_PREFIX)&&!findProduct(id)){delete c[k];ch=true}});if(ch)saveCart(c);
+  renderPromoSlots()}return j}).catch(()=>null);
+document.addEventListener('DOMContentLoaded',renderPromoSlots);
 function cardHTML(p){const u='produit.html?id='+encodeURIComponent(p.id),liq=isLiq(p),top=!liq&&p.id===topId()?'<span class="top">👑 Top vente</span>':'';return `<article class="card rv${liq?' liqcard':''}" style="--c1:${esc(p.c1)};--c2:${esc(p.c2)}">${top}<a class="cimg" href="${u}"><img src="${esc(imgOf(p))}"${imgCls(p)} alt="${isPhoto(p)?'Photo':'Illustration'} ${esc(p.name)}" loading="lazy"></a><div class="cbody"><h3>${esc(p.name)}</h3>${stockSlot(p.id)}<b class="pr">${eur(priceOf(p))}</b>${liq?liqTagHTML():packHTML(p)}<p>${esc(p.desc)}</p><a class="btn sm" href="${u}">Voir la fiche</a></div></article>`}
 function observeReveal(){const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.1});document.querySelectorAll('.rv:not(.in)').forEach(el=>io.observe(el))}
 function renderLayout(){
